@@ -1,0 +1,54 @@
+/* ==========================================================================
+   My Form Modal Styles
+   ========================================================================== */
+
+#my-form-tag-modal .field-setting {
+  display: block;
+  clear: both;
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+#my-form-tag-modal .field-setting:last-child {
+  margin-bottom: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+#my-form-tag-modal .field-setting label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #2c3338;
+}
+
+/* Áp dụng cho các ô nhập liệu text, email, v.v. */
+#my-form-tag-modal .field-setting input[type="text"],
+#my-form-tag-modal .field-setting input[type="number"],
+#my-form-tag-modal .field-setting textarea {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box; /* Rất quan trọng */
+  border: 1px solid #8c8f94;
+  border-radius: 4px;
+}
+
+#my-form-tag-modal .field-setting p.description {
+  font-size: 12px;
+  color: #646970;
+  margin-top: 5px;
+  font-style: italic;
+  margin-bottom: 0;
+}
+
+/* Định dạng riêng cho checkbox */
+#my-form-tag-modal .field-setting input[type="checkbox"] {
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+#my-form-tag-modal .field-setting label input[type="checkbox"] + span {
+  vertical-align: middle;
+}
