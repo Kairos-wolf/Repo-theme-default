@@ -12,7 +12,7 @@ function ht_add_style_customizer_panel($wp_customize)
     $wp_customize->add_panel('ht_style_panel', [
         'title'       => __('Style', 'ht'),
         'description' => __('Tùy chỉnh màu sắc, kiểu chữ và các cài đặt giao diện khác.', 'ht'),
-        'priority'    => 120,
+        'priority'    => 2,
     ]);
 
     // 2. Thêm một Section cho Màu Sắc, và gán nó vào Panel đã tạo

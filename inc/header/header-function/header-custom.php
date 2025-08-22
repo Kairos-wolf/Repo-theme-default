@@ -1,16 +1,26 @@
 <?php
 function mytheme_customize_register($wp_customize)
 {
-    // PANEL: HEADER MAIN SETTINGS
+    // PANEL: HEADER
     $wp_customize->add_panel('header_main_panel', array(
-        'title'    => __('Header Main Settings', 'mytheme'),
-        'priority' => 30,
+        'title'    => __('Header', 'mytheme'),
+        'priority' => 1,
     ));
+
+    $site_identity_section = $wp_customize->get_section('title_tagline');
+
+    if ( $site_identity_section ) {
+        $site_identity_section->panel = 'header_main_panel';
+        $site_identity_section->title = __( 'Logo & Site Identity', 'mytheme' );
+        $site_identity_section->priority = 1;
+    }
+    
     // Section: Header Main
     $wp_customize->add_section('hm_header_main', array(
         'title'    => __('Header Main', 'mytheme'),
         'panel'    => 'header_main_panel',
         'description' => __('Đây là mục chỉnh sửa các thành phần chính của header.', 'mytheme'),
+        'priority' => 3,
     ));
 
     // Background color header main
@@ -30,6 +40,24 @@ function mytheme_customize_register($wp_customize)
         )
     ));
 
+    $wp_customize->add_setting('header_main_bg_image', array(
+        'default'           => '', 
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    // Thêm control để người dùng có thể tải ảnh lên
+    $wp_customize->add_control(new WP_Customize_Image_Control(
+        $wp_customize,
+        'header_main_bg_image_control',
+        array(
+            'label'      => __('Ảnh nền header chính', 'mytheme'),
+            'description' => __('Tải lên một ảnh để làm nền cho header.', 'mytheme'),
+            'section'    => 'hm_header_main',
+            'settings'   => 'header_main_bg_image',
+        )
+    ));
+
     // color header main
     $wp_customize->add_setting('header_main_color', array(
         'default'           => '#ffffff',
@@ -41,7 +69,7 @@ function mytheme_customize_register($wp_customize)
         $wp_customize,
         'header_main_color_control',
         array(
-            'label'    => __('Màu chuws header chính', 'mytheme'),
+            'label'    => __('Màu chữ header chính', 'mytheme'),
             'section'  => 'hm_header_main',
             'settings' => 'header_main_color',
         )

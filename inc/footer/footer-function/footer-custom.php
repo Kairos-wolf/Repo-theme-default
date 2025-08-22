@@ -2,14 +2,15 @@
 function mytheme_customize_footer_register($wp_customize) {
 // PANEL: FOOTER SETTINGS
     $wp_customize->add_panel('footer_main_panel', array(
-        'title'    => __('Footer Settings', 'mytheme'),
+        'title'    => __('Footer', 'mytheme'),
         'priority' => 30,
     ));
 // Section: Footer
     $wp_customize->add_section('hm_footer_main', array(
-        'title'    => __('Footer', 'mytheme'),
+        'title'    => __('Footer Main', 'mytheme'),
         'panel'    => 'footer_main_panel',
         'description' => __('Đây là mục chỉnh sửa các thành phần chính của footer.', 'mytheme'),
+        'priority' => 1,
     ));
 
     // Background color footer

@@ -18,7 +18,7 @@ if (class_exists('WP_Customize_Control')) {
             }
 
             // Danh sách tất cả các mục, bao gồm cả 'menu'
-            $all_items = ['html1', 'html2', 'html3', 'html4', 'html5', 'html6', 'html7', 'html8', 'menu'];
+            $all_items = ['html1', 'html2', 'html3', 'html4', 'html5', 'menu'];
 
             // Các mục chưa được chọn
             $inactive_items = array_diff($all_items, $value);

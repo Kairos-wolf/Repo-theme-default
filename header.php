@@ -66,6 +66,18 @@
         /* 
         * CSS cho các chế độ Layout
         */
+
+        body.layout-full-width .container-fluid,
+        body.layout-full-width .topbar,
+        body.layout-full-width main,
+        body.layout-full-width .footer-items-container {
+            max-width: <?php echo absint(get_theme_mod('ht_boxed_width', 1200)); ?>px;
+            margin: auto;
+        }
+
+        body.layout-full-width {
+            background-color: <?php echo esc_attr(get_theme_mod('ht_background_color_layout', '#f1f1f1')); ?>;
+        }
         @media only screen and (min-width: 992px) {
 
             /* Nền cho chế độ Boxed */
@@ -140,6 +152,10 @@
         .header-main {
             background-color: <?php echo get_theme_mod('header_main_background_color', '#fff'); ?>;
             color: <?php echo get_theme_mod('header_main_color', '#fff'); ?>;
+            background-image: url('<?php echo esc_url(get_theme_mod("header_main_bg_image")); ?>');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         /* Menu (Header Main Settings) */
@@ -201,6 +217,7 @@
                         $layout = get_theme_mod('ht_header_layout', '[]');
                         $items = json_decode($layout, true);
                         $firstItem = array_shift($items); // phần tử đầu tiên
+                        
 
                         if ($firstItem === 'logo') {
                             echo '<div class="header-item logo custom-logo me-2">';

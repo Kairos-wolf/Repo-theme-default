@@ -9,7 +9,8 @@ function ht_customize_register_footer($wp_customize)
     // Section Footer Builder
     $wp_customize->add_section('ht_footer_builder', [
         'title' => __('Footer Builder', 'ht'),
-        'priority' => 30,
+        'priority' => 2,
+        'panel'    => 'footer_main_panel',
     ]);
 
     // Setting for the drag-and-drop layout

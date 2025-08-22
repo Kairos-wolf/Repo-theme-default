@@ -4,7 +4,8 @@ function ht_customize_register($wp_customize)
     // Section Header
     $wp_customize->add_section('ht_header_builder', [
         'title' => __('Header Main Builder', 'ht'),
-        'priority' => 30,
+        'priority' => 4,
+        'panel'    => 'header_main_panel',
     ]);
 
     $wp_customize->add_setting('ht_header_layout', [
@@ -36,7 +37,8 @@ function ht_customize_register($wp_customize)
     // Section Top Bar
     $wp_customize->add_section('ht_topbar_builder', [
         'title' => __('Top Bar Builder', 'ht'),
-        'priority' => 29,
+        'priority' => 2,
+        'panel'    => 'header_main_panel',
     ]);
 
     // Layout: Danh sách thứ tự các item (html1 → html8)
@@ -55,7 +57,7 @@ function ht_customize_register($wp_customize)
         ]
     ));
 
-    // Tạo 8 custom HTML tương ứng với html1 → html8
+    // Tạo 5 custom HTML tương ứng với html1 → html5
     // Xử lý riêng mục đầu tiên
     $wp_customize->add_setting('ht_topbar_html1', [
         'default' =>
@@ -69,7 +71,7 @@ function ht_customize_register($wp_customize)
     ]);
 
     // Vòng lặp cho 7 mục còn lại (từ 2 đến 8)
-    for ($i = 2; $i <= 8; $i++) {
+    for ($i = 2; $i <= 5; $i++) {
         $setting_id = "ht_topbar_html{$i}";
         $wp_customize->add_setting($setting_id, [
             'default' => "<strong>HTML {$i} nội dung</strong>",
@@ -86,7 +88,8 @@ function ht_customize_register($wp_customize)
     // Section Header Bottom
     $wp_customize->add_section('ht_headerbottom_builder', [
         'title' => __('Header Bottom Builder', 'ht'),
-        'priority' => 30, // Đặt priority khác để không trùng với Top Bar
+        'priority' => 5, // Đặt priority khác để không trùng với Top Bar
+        'panel'    => 'header_main_panel',
     ]);
 
     // Layout: Danh sách thứ tự các item cho Header Bottom
