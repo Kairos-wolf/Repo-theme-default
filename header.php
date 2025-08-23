@@ -162,7 +162,7 @@
         /* Menu (Header Main Settings) */
         .menu a {
             color: <?php echo get_theme_mod('menu_text_color', '#000'); ?>;
-            font-size: <?php echo get_theme_mod('menu_font_size', 14); ?>px;
+            font-size: <?php echo get_theme_mod('menu_font_size', 16); ?>px;
             margin-right: <?php echo get_theme_mod('menu_item_spacing', 0); ?>px;
         }
 
