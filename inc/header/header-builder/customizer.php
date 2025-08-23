@@ -70,7 +70,7 @@ function ht_customize_register($wp_customize)
         'type' => 'textarea',
     ]);
 
-    // Vòng lặp cho 7 mục còn lại (từ 2 đến 8)
+    // Vòng lặp cho 4 mục còn lại (từ 2 đến 5)
     for ($i = 2; $i <= 5; $i++) {
         $setting_id = "ht_topbar_html{$i}";
         $wp_customize->add_setting($setting_id, [
@@ -115,7 +115,7 @@ function ht_customize_register($wp_customize)
 
 
     // Tạo 8 ô nhập liệu HTML tương ứng với html1 → html8 cho Header Bottom
-    for ($i = 1; $i <= 8; $i++) {
+    for ($i = 1; $i <= 5; $i++) {
         $setting_id = "ht_headerbottom_html{$i}";
         $wp_customize->add_setting($setting_id, [
             'default' => "<div class='row'><div class='col'>Nội dung</div></div>",

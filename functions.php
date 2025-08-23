@@ -54,4 +54,12 @@ function remove_admin_bar_for_non_admins()
     }
 }
 
-
+function them_class_cho_link_menu_topbar($atts, $item, $args) {
+    // Chỉ áp dụng cho menu có theme_location là 'topbar_menu'
+    if (isset($args->theme_location) && $args->theme_location == 'topbar_menu') {
+        // Thêm class 'text-decoration-none' vào các thẻ <a>
+        $atts['class'] = 'text-decoration-none';
+    }
+    return $atts;
+}
+add_filter('nav_menu_link_attributes', 'them_class_cho_link_menu_topbar', 10, 3);

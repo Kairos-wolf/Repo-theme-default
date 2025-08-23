@@ -1,5 +1,5 @@
 <nav class="ht-headerbottom-builder">
-    <div class="headerbottom row">
+    <div class="headerbottom row align-items-center">
         <?php
         $layout = get_theme_mod('ht_headerbottom_layout', json_encode(['']));
         $items = json_decode($layout, true);
@@ -21,18 +21,18 @@
                     // }
                     if (has_nav_menu('headerbottom_menu')) {
                         // Nếu có menu, hiển thị menu
-                        echo '<div class="headerbottom-item col menu-item text-sm">';
+                        echo '<div class="headerbottom-item col menu-item text-sm d-flex align-items-center">';
                         wp_nav_menu([
                             'theme_location' => 'headerbottom_menu',
                             'container'      => false,
-                            'menu_class'     => 'ht-headerbottom-menu d-inline-flex flex-row text-decoration-none list-unstyled gap-4', // Thêm class CSS cho menu
+                            'menu_class'     => 'ht-headerbottom-menu d-inline-flex flex-row text-decoration-none list-unstyled gap-4 my-auto', // Thêm class CSS cho menu
                             'depth'          => 1, // Chỉ hiển thị menu cấp 1
                         ]);
                         echo '</div>';
                     } else {
                         // Nếu chưa có menu, luôn hiển thị thông báo
                         echo '<div class="headerbottom-item col menu-item text-sm">';
-                        echo '<ul class="ht-headerbottom-menu d-inline-flex flex-row text-decoration-none list-unstyled gap-4"><li>';
+                        echo '<ul class="ht-headerbottom-menu d-inline-flex flex-row text-decoration-none list-unstyled gap-4 my-auto"><li>';
 
                         echo '<span>Chưa thêm menu</span>';
 

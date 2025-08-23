@@ -69,6 +69,7 @@
 
         body.layout-full-width .container-fluid,
         body.layout-full-width .topbar,
+        body.layout-full-width .headerbottom,
         body.layout-full-width main,
         body.layout-full-width .footer-items-container {
             max-width: <?php echo absint(get_theme_mod('ht_boxed_width', 1200)); ?>px;

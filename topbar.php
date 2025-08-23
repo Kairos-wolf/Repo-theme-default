@@ -1,5 +1,5 @@
 <nav class="ht-topbar-builder">
-    <div class="topbar row">
+    <div class="topbar row align-items-center">
         <?php
         // Lấy layout từ Customizer (sắp xếp bởi người dùng)
         $layout = get_theme_mod('ht_topbar_layout', json_encode(['']));
@@ -22,18 +22,18 @@
                     // }
                     if (has_nav_menu('topbar_menu')) {
                         // Nếu có, hiển thị menu
-                        echo '<div class="topbar-item col menu-item text-sm">';
+                        echo '<div class="topbar-item col menu-item text-sm d-flex align-items-center">';
                         wp_nav_menu([
                             'theme_location' => 'topbar_menu',
                             'container'      => false,
-                            'menu_class'     => 'ht-topbar-menu flex flex-row gap-4',
+                            'menu_class'     => 'ht-topbar-menu d-flex list-unstyled gap-4 my-auto',
                             'depth'          => 1,
                         ]);
                         echo '</div>';
                     } else {
                         // Nếu chưa có menu, luôn hiển thị thông báo
-                        echo '<div class="topbar-item col menu-item text-sm">';
-                        echo '<ul class="ht-topbar-menu flex flex-row gap-4"><li>';
+                        echo '<div class="topbar-item col menu-item text-sm d-flex align-items-center">';
+                        echo '<ul class="ht-topbar-menu d-flex list-unstyled gap-4"><li>';
 
                         echo '<span>Chưa thêm menu</span>';
                         echo '</li></ul>';
