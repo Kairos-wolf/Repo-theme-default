@@ -190,6 +190,13 @@
             font-size: <?php echo esc_attr(get_theme_mod('search_button_font_size', '16px')); ?>;
         }
 
+        .search input::placeholder,
+        .search input::-webkit-input-placeholder, /* Chrome, Opera, Safari */
+        .search input::-moz-placeholder, /* Firefox 19+ */
+        .search input:-ms-input-placeholder { /* IE 10+ */
+            font-family: inherit;
+        }
+
         @media (max-width: 640px) {
             .header-main {
                 padding: 6px;
@@ -445,15 +452,17 @@
                     $output .= '</div>';
                     break;
                 case 'social':
-                    $output .= '<div class="header-item social flex space-x-2">';
-                    $output .= '<a href="#"><img src="' . get_template_directory_uri() . '/assets/img/facebook.svg" alt="Facebook" class="h-5 w-5"></a>';
-                    $output .= '<a href="#"><img src="' . get_template_directory_uri() . '/assets/img/twitter.svg" alt="Twitter" class="h-5 w-5"></a>';
-                    $output .= '</div>';
+                    // $output .= '<div class="header-item social flex space-x-2">';
+                    // $output .= '<a href="#"><img src="' . get_template_directory_uri() . '/assets/img/facebook.svg" alt="Facebook" class="h-5 w-5"></a>';
+                    // $output .= '<a href="#"><img src="' . get_template_directory_uri() . '/assets/img/twitter.svg" alt="Twitter" class="h-5 w-5"></a>';
+                    // $output .= '</div>';
+                    ht_display_social_icons_component();
                     break;
                 case 'contact':
-                    $output .= '<div class="header-item contact text-sm">';
-                    $output .= '<span class="font-medium">Hotline:</span> 0989-xxx-xxx';
-                    $output .= '</div>';
+                    // $output .= '<div class="header-item contact text-sm">';
+                    // $output .= '<span class="font-medium">Hotline:</span> 0989-xxx-xxx';
+                    // $output .= '</div>';
+                    ht_display_hotline_component();
                     break;
                 case 'custom_html':
                     $output .= '<div class="header-item custom-html">';
@@ -485,12 +494,12 @@
                 case 'signup':
                     if (!$is_customer_view) {
                         $output .= '<div class="header-item signup">';
-                        $output .= '<a href="' . site_url('/index.php/dang-ky') . '" class="">Đăng ký</a>';
+                        $output .= '<a href="' . site_url('/index.php/dang-ky') . '" class="text-decoration-none">Đăng ký</a>';
                         $output .= '</div>';
                     }
                     break;
                 case 'login':
-                    $output .= '<div class="header-item login">';
+                    $output .= '<div class="header-item login ">';
 
                     // Kiểm tra nếu là khách hàng đã đăng nhập
                     if (is_user_logged_in() && in_array('customer', (array)$current_user->roles)) {
@@ -522,7 +531,7 @@
                         // View dành cho khách hoặc người dùng không phải 'customer' (Admin,...)
                         $login_url = get_permalink(get_page_by_path('dang-nhap')); // <-- Thay slug nếu cần
                         if ($login_url) {
-                            $output .= '<a href="' . esc_url($login_url) . '" class="text-sm text-blue-600 hover:underline">Đăng nhập</a>';
+                            $output .= '<a href="' . esc_url($login_url) . '" class="text-sm text-blue-600 hover:underline text-decoration-none ">Đăng nhập</a>';
                         }
                     }
 

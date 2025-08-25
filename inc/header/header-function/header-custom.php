@@ -124,6 +124,7 @@ function mytheme_customize_register($wp_customize)
     $wp_customize->add_section('hm_logo_settings', array(
         'title'    => __('Logo Settings', 'mytheme'),
         'panel'    => 'header_main_panel',
+        'priority' => '15'
     ));
 
     // Setting: Chiều rộng logo
@@ -207,6 +208,7 @@ function mytheme_customize_register($wp_customize)
         'title'    => __('Menu Settings', 'mytheme'),
         'panel'    => 'header_main_panel',
         'description' => __('Đây là mục chỉnh sửa khoảng cách giữa menu và các thành phần khác.', 'mytheme'),
+        'priority' => '16'
     ));
 
     // Padding Left menu
@@ -323,6 +325,7 @@ function mytheme_customize_register($wp_customize)
         'title'    => __('Search Settings', 'mytheme'),
         'panel'    => 'header_main_panel',
         'description' => __('Đây là mục thêm khoảng cách giữa search và các thành phần khác.', 'mytheme'),
+        'priority' => '17'
     ));
 
     // UI search
@@ -554,5 +557,81 @@ function mytheme_customize_register($wp_customize)
         'type' => 'text',
         'description' => __('Nhập theo cú pháp CSS theo tứ tự [top-left], [top-right], [bottom-right], [bottom-left]. Đơn vị (px, rem, em,....), ví dụ: 5px 10px 5px 10px', 'mytheme'),
     ));
+
+    // Danh sách các mạng xã hội và thông tin liên hệ
+    $networks = [
+        'facebook'    => ['label' => 'Facebook', 'type' => 'url'],
+        'threads'     => ['label' => 'Threads', 'type' => 'url'],
+        'instagram'   => ['label' => 'Instagram', 'type' => 'url'],
+        'tiktok'      => ['label' => 'TikTok', 'type' => 'url'],
+        'youtube'     => ['label' => 'YouTube', 'type' => 'url'],
+        'twitter'     => ['label' => 'Twitter (cũ)', 'type' => 'url'],
+        'x-twitter'   => ['label' => 'X (Twitter mới)', 'type' => 'url'],
+        'telegram'    => ['label' => 'Telegram', 'type' => 'url'],
+        'discord'     => ['label' => 'Discord', 'type' => 'url'],
+        'phone'       => ['label' => 'Số điện thoại', 'type' => 'text'],
+        'email'       => ['label' => 'Địa chỉ Email', 'type' => 'email'],
+    ];
+
+    $wp_customize->add_section('ht_social_section', [
+        'title'    => __('Mạng xã hội & Liên hệ', 'my-theme'),
+        'panel' => 'header_main_panel',
+        'description' => __('Nhập đường link đầy đủ (VD: https://facebook.com/...) hoặc thông tin liên hệ. Bỏ trống nếu không muốn hiển thị.', 'my-theme'),
+        'priority' => '18'
+    ]);
+
+    foreach ($networks as $key => $details) {
+        // Thêm Setting
+        $wp_customize->add_setting("ht_social_{$key}_url", [
+            'default'           => '',
+            'sanitize_callback' => ($details['type'] === 'email') ? 'sanitize_email' : (($details['type'] === 'url') ? 'esc_url_raw' : 'sanitize_text_field'),
+        ]);
+
+        // Thêm Control
+        $wp_customize->add_control("ht_social_{$key}_url", [
+            'label'   => $details['label'],
+            'section' => 'ht_social_section',
+            'type'    => $details['type'],
+        ]);
+    }
+
+    
+    $wp_customize->add_section('ht_hotline_section', [
+    'title'       => __('Contact', 'ht'),
+    'priority'    => 15,
+    'panel'       => 'header_main_panel',
+    ]);
+
+    // --- TÙY CHỈNH ICON ---
+    $wp_customize->add_setting('ht_hotline_icon_class', ['default' => 'fas fa-phone', 'sanitize_callback' => 'sanitize_text_field']);
+    $wp_customize->add_control('ht_hotline_icon_class', ['label' => __('Icon Class (Font Awesome)', 'ht'), 'section' => 'ht_hotline_section', 'type' => 'text']);
+
+    $wp_customize->add_setting('ht_hotline_icon_size', ['default' => 50, 'sanitize_callback' => 'absint']);
+    $wp_customize->add_control('ht_hotline_icon_size', ['label' => __('Kích thước Icon (px)', 'ht'), 'section' => 'ht_hotline_section', 'type' => 'number']);
+
+    $wp_customize->add_setting('ht_hotline_icon_font_size', ['default' => 20, 'sanitize_callback' => 'absint']);
+    $wp_customize->add_control('ht_hotline_icon_font_size', ['label' => __('Kích thước Font Icon (px)', 'ht'), 'section' => 'ht_hotline_section', 'type' => 'number']);
+
+    $wp_customize->add_setting('ht_hotline_icon_color', ['default' => 'orange', 'sanitize_callback' => 'sanitize_hex_color']);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_hotline_icon_color', ['label' => __('Màu Icon', 'ht'), 'section' => 'ht_hotline_section']));
+
+    $wp_customize->add_setting('ht_hotline_icon_bg_color', ['default' => '#ffffff', 'sanitize_callback' => 'sanitize_hex_color']);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_hotline_icon_bg_color', ['label' => __('Màu nền Icon', 'ht'), 'section' => 'ht_hotline_section']));
+
+    $wp_customize->add_setting('ht_hotline_icon_border_color', ['default' => 'orange', 'sanitize_callback' => 'sanitize_hex_color']);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_hotline_icon_border_color', ['label' => __('Màu viền Icon', 'ht'), 'section' => 'ht_hotline_section']));
+
+    // --- TÙY CHỈNH TEXT ---
+    $wp_customize->add_setting('ht_hotline_text_top', ['default' => 'Hotline 24/7', 'sanitize_callback' => 'sanitize_text_field']);
+    $wp_customize->add_control('ht_hotline_text_top', ['label' => __('Dòng chữ trên', 'ht'), 'section' => 'ht_hotline_section', 'type' => 'text']);
+
+    $wp_customize->add_setting('ht_hotline_text_top_color', ['default' => '#000000', 'sanitize_callback' => 'sanitize_hex_color']);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_hotline_text_top_color', ['label' => __('Màu dòng chữ trên', 'ht'), 'section' => 'ht_hotline_section']));
+
+    $wp_customize->add_setting('ht_hotline_number', ['default' => '123.456.789', 'sanitize_callback' => 'sanitize_text_field']);
+    $wp_customize->add_control('ht_hotline_number', ['label' => __('Số điện thoại', 'ht'), 'section' => 'ht_hotline_section', 'type' => 'text']);
+
+    $wp_customize->add_setting('ht_hotline_number_color', ['default' => 'red', 'sanitize_callback' => 'sanitize_hex_color']);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_hotline_number_color', ['label' => __('Màu số điện thoại', 'ht'), 'section' => 'ht_hotline_section']));
 }
 add_action('customize_register', 'mytheme_customize_register');

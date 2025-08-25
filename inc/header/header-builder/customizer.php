@@ -41,7 +41,7 @@ function ht_customize_register($wp_customize)
         'panel'    => 'header_main_panel',
     ]);
 
-    // Layout: Danh sách thứ tự các item (html1 → html8)
+    // Layout: Danh sách thứ tự các item (html1 → html5)
     $wp_customize->add_setting('ht_topbar_layout', [
         'default' => json_encode(['html1', 'html2']),
         'transport' => 'refresh',
@@ -85,10 +85,13 @@ function ht_customize_register($wp_customize)
         ]);
     }
 
+    
+
+
     // Section Header Bottom
     $wp_customize->add_section('ht_headerbottom_builder', [
         'title' => __('Header Bottom Builder', 'ht'),
-        'priority' => 5, // Đặt priority khác để không trùng với Top Bar
+        'priority' => 5, // Đặt priority khác để không trùng
         'panel'    => 'header_main_panel',
     ]);
 
@@ -100,7 +103,6 @@ function ht_customize_register($wp_customize)
     ]);
 
     // Thêm control kéo thả cho Header Bottom
-    // Giả định bạn đã tạo file class-headerbottom-builder-control.php ở bước 2
     if (class_exists('HT_Headerbottom_Builder_Control')) {
         $wp_customize->add_control(new HT_Headerbottom_Builder_Control(
             $wp_customize,
@@ -113,8 +115,7 @@ function ht_customize_register($wp_customize)
         ));
     }
 
-
-    // Tạo 8 ô nhập liệu HTML tương ứng với html1 → html8 cho Header Bottom
+    // Tạo 5 ô nhập liệu HTML tương ứng với html1 → html5 cho Header Bottom
     for ($i = 1; $i <= 5; $i++) {
         $setting_id = "ht_headerbottom_html{$i}";
         $wp_customize->add_setting($setting_id, [

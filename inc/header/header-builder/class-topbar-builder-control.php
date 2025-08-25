@@ -18,7 +18,7 @@ if (class_exists('WP_Customize_Control')) {
             }
 
             // Danh sách tất cả các mục, bao gồm cả 'menu'
-            $all_items = ['html1', 'html2', 'html3', 'html4', 'html5', 'menu'];
+            $all_items = ['html1', 'html2', 'html3', 'html4', 'html5', 'menu', 'menu', 'search', 'signup', 'social', 'contact', 'language_switcher', 'cart', 'login'];
 
             // Các mục chưa được chọn
             $inactive_items = array_diff($all_items, $value);
@@ -43,17 +43,20 @@ if (class_exists('WP_Customize_Control')) {
 
         private function render_sortable_item($item)
         {
-            $icon = '🔧'; // icon mặc định
             $label = ucfirst($item);
-
-            // Gán biểu tượng và nhãn riêng cho từng mục nếu cần
-            switch ($item) {
-                case 'menu':
-                    $icon = '☰'; // Icon cho menu
-                    $label = 'Menu';
-                    break;
-                    // Bạn có thể thêm các case khác ở đây cho các mục đặc biệt
-            }
+        
+            $icon = match ($item) {
+                'logo' => '🖼️',
+                'menu' => '📋',
+                'search' => '🔍',
+                'social' => '🌐',
+                'contact' => '☎️',
+                'language_switcher' => '🌍',
+                'cart' => '🛒',
+                'signup' => '🔘',
+                'login' => '👤',
+                default => '🔧'
+            };
 
             return '<li class="ht-topbar-sortable-item flex flex-col items-center justify-center px-4 py-2 bg-white border border-gray-300 rounded-md min-w-[80px] text-center cursor-move hover:bg-gray-100 transition" data-item="' . esc_attr($item) . '">
                 <span class="text-2xl mb-1">' . $icon . '</span>
