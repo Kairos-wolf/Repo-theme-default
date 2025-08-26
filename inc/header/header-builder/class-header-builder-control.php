@@ -12,37 +12,53 @@ if (class_exists('WP_Customize_Control')) {
 
         public function render_content()
         {
+            // Giải mã JSON, nếu không hợp lệ thì tạo cấu trúc 2 cột mặc định
             $value = json_decode($this->value(), true);
-            if (!is_array($value)) {
-                $value = [''];
-                // $value = ['logo', 'menu', 'search'];
+            if (!is_array($value) || !isset($value['left']) || !isset($value['right'])) {
+                $value = ['left' => ['logo'], 'right' => ['menu', 'search']];
             }
 
-            $all_items = ['logo', 'menu', 'search', 'signup', 'social', 'contact', 'custom_html', 'language_switcher', 'cart', 'login'];
-            $inactive_items = array_diff($all_items, $value);
+            // Tất cả các item đang hoạt động
+            $active_items = array_merge($value['left'], $value['right']);
+            
+            // Tất cả các item có thể có
+            $all_items = ['logo', 'menu', 'search', 'signup', 'social', 'contact', 'custom_html', /*'language_switcher',*/ 'cart', 'login'];
 
-            echo '<div class="space-y-4">';
-            echo '<label class="block text-sm font-semibold text-gray-700 mb-2">' . esc_html($this->label) . '</label>';
+            // Các item chưa được sử dụng
+            $inactive_items = array_diff($all_items, $active_items);
 
-            // Active items
-            echo '<p class="text-sm font-medium mb-1">Thành phần đã dùng</p>';
-            echo '<ul id="ht-header-sortable" class="ht-sortable flex flex-row space-x-3 p-2 border border-gray-300 rounded-md bg-white min-h-[50px]">';
-            foreach ($value as $item) {
-                echo $this->render_sortable_item($item);
-            }
-            echo '</ul>';
+            ?>
+            <div class="space-y-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-2"><?php echo esc_html($this->label); ?></label>
 
-            // Available items
-            echo '<p class="text-sm font-medium mt-4 mb-1">Thành phần còn lại</p>';
-            echo '<ul id="ht-header-available" class="ht-sortable flex flex-row space-x-3 p-2 border border-dashed border-gray-300 rounded-md bg-gray-50 min-h-[50px]">';
-            foreach ($inactive_items as $item) {
-                echo $this->render_sortable_item($item);
-            }
-            echo '</ul>';
+                <div class="ht-header-active-areas">
+                    <div class="ht-header-area">
+                        <p class="ht-header-area-title">Trái</p>
+                        <ul id="ht-header-left" class="ht-sortable">
+                            <?php foreach ($value['left'] as $item) { echo $this->render_sortable_item($item); } ?>
+                        </ul>
+                    </div>
+                    <div class="ht-header-area">
+                        <p class="ht-header-area-title">Phải</p>
+                        <ul id="ht-header-right" class="ht-sortable">
+                            <?php foreach ($value['right'] as $item) { echo $this->render_sortable_item($item); } ?>
+                        </ul>
+                    </div>
+                </div>
 
-            echo '<input type="hidden" id="' . esc_attr($this->id) . '" name="' . esc_attr($this->id) . '" value="' . esc_attr(json_encode($value)) . '" ' . $this->get_link() . ' />';
-            echo '</div>';
+
+                <p class="text-sm font-medium mt-4 mb-1">Thành phần còn lại</p>
+                <ul id="ht-header-available" class="ht-sortable flex flex-row flex-wrap gap-3 p-2 border border-dashed border-gray-300 rounded-md bg-gray-50 min-h-[50px]">
+                    <?php foreach ($inactive_items as $item) {
+                        echo $this->render_sortable_item($item);
+                    } ?>
+                </ul>
+
+                <input type="hidden" id="<?php echo esc_attr($this->id); ?>" name="<?php echo esc_attr($this->id); ?>" value="<?php echo esc_attr(json_encode($value)); ?>" <?php $this->link(); ?> />
+            </div>
+            <?php
         }
+
 
         private function render_sortable_item($item)
         {
@@ -53,7 +69,7 @@ if (class_exists('WP_Customize_Control')) {
                 'social' => '🌐',
                 'contact' => '☎️',
                 'custom_html' => '✍️',
-                'language_switcher' => '🌍',
+                //'language_switcher' => '🌍',
                 'cart' => '🛒',
                 'signup' => '🔘',
                 'login' => '👤',

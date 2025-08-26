@@ -1,15 +1,75 @@
 .ht-topbar-sortable {
   list-style: none;
   min-height: 60px;
-  min-width: 150px;
 }
 
 .ht-topbar-sortable-item {
   background-color: #f9f9f9;
   padding: 8px;
-  margin: 4px 0;
   border: 1px solid #ccc;
   border-radius: 5px;
   cursor: move;
   text-align: center;
+  flex-shrink: 0; /* Ngăn các item bị co lại */
+}
+
+/* ==========================================================================
+   Bố cục GRID 3 CỘT cho các khu vực hoạt động (Trái/Giữa/Phải)
+   ========================================================================== */
+.ht-topbar-active-areas {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
+
+.ht-topbar-area {
+    background-color: #fff;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    display: flex;
+    flex-direction: column;
+}
+
+.ht-topbar-area-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-align: center;
+    color: #495057;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.ht-topbar-area .ht-topbar-sortable {
+    border: 1px dashed #a0a5aa;
+    background-color: #fdfdfd;
+    min-height: 80px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+}
+
+/* 1. Ẩn phần chữ (label) của item */
+.ht-topbar-area .ht-topbar-sortable-item .text-sm {
+    display: none;
+}
+
+/* 2. Điều chỉnh icon: đưa font-size về 18px và xóa margin dưới */
+.ht-topbar-area .ht-topbar-sortable-item .text-2xl {
+    font-size: 18px;
+}
+
+.ui-state-highlight { 
+    height: 44px; /* Đồng bộ chiều cao với item đã thu nhỏ */
+    width: 44px;
+    background-color: #e9ecef; 
+    border: 1px dashed #6c757d;
+    border-radius: 5px;
+    margin: 4px;
 }

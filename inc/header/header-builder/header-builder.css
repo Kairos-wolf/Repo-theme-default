@@ -1,15 +1,62 @@
 .ht-sortable {
   list-style: none;
   min-height: 60px;
-  min-width: 150px;
 }
 
 .ht-sortable-item {
   background-color: #f9f9f9;
   padding: 8px;
-  margin: 4px 0;
   border: 1px solid #ccc;
   border-radius: 5px;
   cursor: move;
   text-align: center;
+  flex-shrink: 0; /* Ngăn các item bị co lại */
+}
+
+/* CSS mới cho bố cục 2 cột trong Customizer */
+.ht-header-active-areas {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Chia thành 2 cột bằng nhau */
+    gap: 16px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
+
+.ht-header-area {
+    background-color: #fff;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    display: flex;
+    flex-direction: column;
+}
+
+.ht-header-area-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-align: center;
+    color: #495057;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.ht-header-area .ht-sortable {
+    border: 1px dashed #a0a5aa;
+    background-color: #fdfdfd;
+    min-height: 80px;
+    flex-grow: 1; /* Cho phép vùng kéo thả co giãn */
+    display: flex;
+    flex-direction: column; /* Sắp xếp các item theo chiều dọc */
+    align-items: center; /* Căn giữa các item */
+    padding: 5px;
+}
+
+.ht-header-area .ht-sortable-item .text-sm {
+    display: none;
+}
+
+.ht-header-area .ht-sortable-item .text-2xl {
+    font-size: 18px;
 }

@@ -63,8 +63,7 @@
     <?php wp_head(); ?>
 
     <style>
-        /* 
-        * CSS cho các chế độ Layout
+        /* * CSS cho các chế độ Layout
         */
 
         body.layout-full-width .container-fluid,
@@ -214,47 +213,60 @@
     <div id="page" style="background-color: white;"> <?php // <-- THÊM DÒNG NÀY 
                                                         ?>
         <header class="sticky top-0">
-            <!-- Top bar -->
             <?php get_template_part('topbar'); ?>
-            <!-- Header main -->
-            <nav class="navbar navbar-expand-lg header-main">
+            <?php
+                // Kiểm tra xem sticky có được bật cho header main không
+                $is_sticky = get_theme_mod('ht_sticky_header_main_enabled', false);
+                $sticky_class = $is_sticky ? ' ht-sticky-item' : '';
+            ?>
+            <nav class="navbar navbar-expand-lg header-main<?php echo esc_attr($sticky_class); ?>">
                 <div class="container-fluid">
-                    <!-- Logo -->
-                    <div class="navbar-brand d-flex align-items-center">
-                        <?php
-                        $layout = get_theme_mod('ht_header_layout', '[]');
-                        $items = json_decode($layout, true);
-                        $firstItem = array_shift($items); // phần tử đầu tiên
-                        
+                    <?php
+                    // Lấy layout từ Customizer với cấu trúc mới
+                    $default_layout = json_encode(['left' => ['logo'], 'right' => ['menu']]);
+                    $layout_json = get_theme_mod('ht_header_layout', $default_layout);
+                    $layout = json_decode($layout_json, true);
 
-                        if ($firstItem === 'logo') {
-                            echo '<div class="header-item logo custom-logo me-2">';
-                            if (has_custom_logo()) {
-                                the_custom_logo();
-                            } else {
-                                bloginfo('name');
+                    // Đảm bảo $layout luôn là một mảng hợp lệ
+                    if (!is_array($layout) || !isset($layout['left']) || !isset($layout['right'])) {
+                        $layout = json_decode($default_layout, true);
+                    }
+                    ?>
+                    <div class="navbar-brand d-flex align-items-center gap-3">
+                        <?php
+                        if (!empty($layout['left'])) {
+                            foreach ($layout['left'] as $item) {
+                                // Logic đặc biệt cho logo để giữ lại class custom-logo
+                                if ($item === 'logo') {
+                                    echo '<div class="header-item logo custom-logo">';
+                                    if (has_custom_logo()) {
+                                        the_custom_logo();
+                                    } else {
+                                        bloginfo('name');
+                                    }
+                                    echo '</div>';
+                                } else {
+                                    echo render_header_item($item);
+                                }
                             }
-                            echo '</div>';
-                        } else {
-                            echo '<div class="header-item me-2">' . esc_html($firstItem) . '</div>';
                         }
                         ?>
                     </div>
 
-                    <!-- Toggle button -->
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
 
-                    <!-- Collapsible menu -->
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav d-flex align-items-lg-center ">
+                        <ul class="navbar-nav ms-auto d-flex align-items-lg-center gap-3">
                             <?php
-                            foreach ($items as $item) {
-                                echo '<li class="nav-item">';
-                                echo render_header_item($item); // Chèn item động từ theme mod
-                                echo '</li>';
+                            if (!empty($layout['right'])) {
+                                foreach ($layout['right'] as $item) {
+                                    echo '<li class="nav-item">';
+                                    echo render_header_item($item);
+                                    echo '</li>';
+                                }
                             }
                             ?>
                         </ul>
@@ -262,7 +274,6 @@
                 </div>
             </nav>
 
-            <!-- Header bottom -->
             <?php get_template_part('header-bottom'); ?>
         </header>
         <?php
@@ -419,37 +430,38 @@
                     break;
 
                 case 'search':
-                    $output .= '<div class="header-item search search-padding">';
+                    // $output .= '<div class="header-item search search-padding">';
 
-                    if ($search_ui == 'modern') { // Hiện đại
-                        $output .= '
-                <form role="search" method="get" action="' . home_url('/') . '" class="d-flex align-items-center">
-                    <input name="s" type="search" placeholder="' . esc_attr($search_placeholder) . '" 
-                            class="form-control rounded-start me-1" />
-                    <button type="submit" 
-                            class="search-button d-flex align-items-center">
-                        ' . wp_kses_post(get_theme_mod('search_button_html', 'Tìm <i class="fas fa-search ms-1"></i>')) . '
-                    </button>
-                </form>';
-                    } elseif ($search_ui == 'simple') { // Tối giản
-                        $output .= '
-                <form role="search" method="get" action="' . home_url('/') . '">
-                    <input name="s" type="search" placeholder="' . esc_attr($search_placeholder) . '" 
-                            class="form-control" />
-                </form>';
-                    } else { // Mặc định
-                        $output .= '
-                <form role="search" method="get" action="' . home_url('/') . '" class="search-form d-flex align-items-center">
-                    <input name="s" type="search" placeholder="' . esc_attr($search_placeholder) . '" 
-                            class="form-control me-1" />
-                    <button type="submit" 
-                            class="search-button  d-flex align-items-center">
-                        ' . wp_kses_post(get_theme_mod('search_button_html', 'Tìm <i class="fas fa-search ms-1"></i>')) . '
-                    </button>
-                </form>';
-                    }
+                    // if ($search_ui == 'modern') { // Hiện đại
+                    //     $output .= '
+                    // <form role="search" method="get" action="' . home_url('/') . '" class="d-flex align-items-center">
+                    //     <input name="s" type="search" placeholder="' . esc_attr($search_placeholder) . '" 
+                    //             class="form-control rounded-start me-1" />
+                    //     <button type="submit" 
+                    //             class="search-button d-flex align-items-center">
+                    //         ' . wp_kses_post(get_theme_mod('search_button_html', 'Tìm <i class="fas fa-search ms-1"></i>')) . '
+                    //     </button>
+                    // </form>';
+                    //     } elseif ($search_ui == 'simple') { // Tối giản
+                    //         $output .= '
+                    // <form role="search" method="get" action="' . home_url('/') . '">
+                    //     <input name="s" type="search" placeholder="' . esc_attr($search_placeholder) . '" 
+                    //             class="form-control" />
+                    // </form>';
+                    //     } else { // Mặc định
+                    //         $output .= '
+                    // <form role="search" method="get" action="' . home_url('/') . '" class="search-form d-flex align-items-center">
+                    //     <input name="s" type="search" placeholder="' . esc_attr($search_placeholder) . '" 
+                    //             class="form-control me-1" />
+                    //     <button type="submit" 
+                    //             class="search-button  d-flex align-items-center">
+                    //         ' . wp_kses_post(get_theme_mod('search_button_html', 'Tìm <i class="fas fa-search ms-1"></i>')) . '
+                    //     </button>
+                    // </form>';
+                    //     }
 
-                    $output .= '</div>';
+                    // $output .= '</div>';
+                    ht_display_search_component();
                     break;
                 case 'social':
                     // $output .= '<div class="header-item social flex space-x-2">';
@@ -470,26 +482,27 @@
                     $output .= '</div>';
                     break;
                 case 'language_switcher':
-                    $output .= '<div class="header-item lang">';
-                    $output .= '<select class="text-sm border-gray-300 rounded p-1">
-                            <option>🇻🇳 VN</option>
-                            <option>🇬🇧 EN</option>
-                        </select>';
-                    $output .= '</div>';
+                    // $output .= '<div class="header-item lang">';
+                    // $output .= '<select class="text-sm border-gray-300 rounded p-1">
+                    //         <option>🇻🇳 VN</option>
+                    //         <option>🇬🇧 EN</option>
+                    //     </select>';
+                    // $output .= '</div>';
                     break;
                 case 'cart':
-                    $cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
-                    $output .= '<div class="header-item cart position-relative">'; // Use Bootstrap's position-relative
-                    $output .= '<a href="' . site_url('/index.php/cart') . '" class="btn btn-outline-light position-relative">'; // Bootstrap button styling
-                    $output .= '<i class="fa-solid fa-cart-shopping me-1"></i> Cart'; // Font Awesome icon with some text
-                    if ($cart_count > 0) {
-                        $output .= '<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">'; // Bootstrap badge for count
-                        $output .= $cart_count;
-                        $output .= '<span class="visually-hidden">items in cart</span>'; // For accessibility
-                        $output .= '</span>';
-                    }
-                    $output .= '</a>';
-                    $output .= '</div>';
+                    // $cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
+                    // $output .= '<div class="header-item cart position-relative">'; // Use Bootstrap's position-relative
+                    // $output .= '<a href="' . site_url('/index.php/cart') . '" class="btn btn-outline-light position-relative">'; // Bootstrap button styling
+                    // $output .= '<i class="fa-solid fa-cart-shopping me-1"></i> Cart'; // Font Awesome icon with some text
+                    // if ($cart_count > 0) {
+                    //     $output .= '<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">'; // Bootstrap badge for count
+                    //     $output .= $cart_count;
+                    //     $output .= '<span class="visually-hidden">items in cart</span>'; // For accessibility
+                    //     $output .= '</span>';
+                    // }
+                    // $output .= '</a>';
+                    // $output .= '</div>';
+                    ht_display_cart_component();
                     break;
                 case 'signup':
                     if (!$is_customer_view) {
@@ -499,54 +512,66 @@
                     }
                     break;
                 case 'login':
-                    $output .= '<div class="header-item login ">';
+                    // $output .= '<div class="header-item login ">';
 
-                    // Kiểm tra nếu là khách hàng đã đăng nhập
-                    if (is_user_logged_in() && in_array('customer', (array)$current_user->roles)) {
+                    // // Kiểm tra nếu là khách hàng đã đăng nhập
+                    // if (is_user_logged_in() && in_array('customer', (array)$current_user->roles)) {
 
-                        // Lấy URL các trang một cách linh hoạt, tránh hard-code
-                        $account_url = get_permalink(get_page_by_path('tai-khoan')); // <-- Thay slug nếu cần
-                        $order_history_url = get_permalink(get_page_by_path('theo-doi-don-hang')); // <-- Thay slug nếu cần
-                        $logout_url = wp_logout_url(home_url());
+                    //     // Lấy URL các trang một cách linh hoạt, tránh hard-code
+                    //     $account_url = get_permalink(get_page_by_path('tai-khoan')); // <-- Thay slug nếu cần
+                    //     $order_history_url = get_permalink(get_page_by_path('theo-doi-don-hang')); // <-- Thay slug nếu cần
+                    //     $logout_url = wp_logout_url(home_url());
 
-                        $output .= '<div class="nav-item dropdown">';
-                        $output .= '<a class="nav-link dropdown-toggle" href="#" id="userAccountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">';
-                        $output .= 'Xin chào, ' . esc_html($current_user->display_name);
-                        $output .= '</a>';
-                        $output .= '<ul class="dropdown-menu" aria-labelledby="userAccountDropdown">';
+                    //     $output .= '<div class="nav-item dropdown">';
+                    //     $output .= '<a class="nav-link dropdown-toggle" href="#" id="userAccountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">';
+                    //     $output .= 'Xin chào, ' . esc_html($current_user->display_name);
+                    //     $output .= '</a>';
+                    //     $output .= '<ul class="dropdown-menu" aria-labelledby="userAccountDropdown">';
 
-                        // Chỉ hiển thị link nếu trang tồn tại
-                        if ($account_url) {
-                            $output .= '<li><a class="dropdown-item" href="' . esc_url($account_url) . '">Tài khoản của tôi</a></li>';
-                        }
-                        if ($order_history_url) {
-                            $output .= '<li><a class="dropdown-item" href="' . esc_url($order_history_url) . '">Đơn hàng của tôi</a></li>';
-                        }
+                    //     // Chỉ hiển thị link nếu trang tồn tại
+                    //     if ($account_url) {
+                    //         $output .= '<li><a class="dropdown-item" href="' . esc_url($account_url) . '">Tài khoản của tôi</a></li>';
+                    //     }
+                    //     if ($order_history_url) {
+                    //         $output .= '<li><a class="dropdown-item" href="' . esc_url($order_history_url) . '">Đơn hàng của tôi</a></li>';
+                    //     }
 
-                        $output .= '<li><hr class="dropdown-divider"></li>';
-                        $output .= '<li><a class="dropdown-item" href="' . esc_url($logout_url) . '">Đăng xuất</a></li>';
-                        $output .= '</ul>';
-                        $output .= '</div>';
-                    } else {
-                        // View dành cho khách hoặc người dùng không phải 'customer' (Admin,...)
-                        $login_url = get_permalink(get_page_by_path('dang-nhap')); // <-- Thay slug nếu cần
-                        if ($login_url) {
-                            $output .= '<a href="' . esc_url($login_url) . '" class="text-sm text-blue-600 hover:underline text-decoration-none ">Đăng nhập</a>';
-                        }
-                    }
+                    //     $output .= '<li><hr class="dropdown-divider"></li>';
+                    //     $output .= '<li><a class="dropdown-item" href="' . esc_url($logout_url) . '">Đăng xuất</a></li>';
+                    //     $output .= '</ul>';
+                    //     $output .= '</div>';
+                    // } else {
+                    //     // View dành cho khách hoặc người dùng không phải 'customer' (Admin,...)
+                    //     $login_url = get_permalink(get_page_by_path('dang-nhap')); // <-- Thay slug nếu cần
+                    //     if ($login_url) {
+                    //         $output .= '<a href="' . esc_url($login_url) . '" class="text-sm text-blue-600 hover:underline text-decoration-none ">Đăng nhập</a>';
+                    //     }
+                    // }
 
-                    $output .= '</div>';
+                    // $output .= '</div>';
+                    ht_display_login_component();
                     break;
 
                 default:
-                    $output .= '<div class="header-item">' . esc_html($item) . '</div>';
+                    // Render the logo specifically if it's not handled in the main section
+                    if ($item === 'logo') {
+                        $output .= '<div class="header-item logo custom-logo">';
+                        if (has_custom_logo()) {
+                            // Using get_custom_logo() to get the full <a> tag with link
+                            $output .= get_custom_logo();
+                        } else {
+                           $output .= '<a href="'.esc_url(home_url('/')).'" rel="home">'.get_bloginfo('name').'</a>';
+                        }
+                        $output .= '</div>';
+                    } else {
+                        $output .= '<div class="header-item">' . esc_html($item) . '</div>';
+                    }
             }
             return $output;
         }
         ?>
 
 
-        <!-- Script hover submenu trên điện thoại -->
         <script>
             document.querySelectorAll('.menu .group > a').forEach(link => {
                 link.addEventListener('click', function(e) {
@@ -558,3 +583,4 @@
                 });
             });
         </script>
+</html>

@@ -577,7 +577,7 @@ function mytheme_customize_register($wp_customize)
         'title'    => __('Mạng xã hội & Liên hệ', 'my-theme'),
         'panel' => 'header_main_panel',
         'description' => __('Nhập đường link đầy đủ (VD: https://facebook.com/...) hoặc thông tin liên hệ. Bỏ trống nếu không muốn hiển thị.', 'my-theme'),
-        'priority' => '18'
+        'priority' => '20'
     ]);
 
     foreach ($networks as $key => $details) {
@@ -595,7 +595,7 @@ function mytheme_customize_register($wp_customize)
         ]);
     }
 
-    
+    //contact
     $wp_customize->add_section('ht_hotline_section', [
     'title'       => __('Contact', 'ht'),
     'priority'    => 15,
@@ -622,7 +622,7 @@ function mytheme_customize_register($wp_customize)
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_hotline_icon_border_color', ['label' => __('Màu viền Icon', 'ht'), 'section' => 'ht_hotline_section']));
 
     // --- TÙY CHỈNH TEXT ---
-    $wp_customize->add_setting('ht_hotline_text_top', ['default' => 'Hotline 24/7', 'sanitize_callback' => 'sanitize_text_field']);
+    $wp_customize->add_setting('ht_hotline_text_top', ['default' => 'Hotline', 'sanitize_callback' => 'sanitize_text_field']);
     $wp_customize->add_control('ht_hotline_text_top', ['label' => __('Dòng chữ trên', 'ht'), 'section' => 'ht_hotline_section', 'type' => 'text']);
 
     $wp_customize->add_setting('ht_hotline_text_top_color', ['default' => '#000000', 'sanitize_callback' => 'sanitize_hex_color']);
@@ -633,5 +633,227 @@ function mytheme_customize_register($wp_customize)
 
     $wp_customize->add_setting('ht_hotline_number_color', ['default' => 'red', 'sanitize_callback' => 'sanitize_hex_color']);
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_hotline_number_color', ['label' => __('Màu số điện thoại', 'ht'), 'section' => 'ht_hotline_section']));
+
+
+    // cart
+    $wp_customize->add_section('ht_cart_section', [
+    'title'       => __('Giỏ hàng (Cart)', 'ht'),
+    'priority'    => 18,
+    'panel'       => 'header_main_panel',
+    ]);
+
+    // --- TÙY CHỈNH ICON ---
+    $wp_customize->add_setting('ht_cart_icon_type', ['default' => 'preset', 'sanitize_callback' => 'sanitize_key']);
+    $wp_customize->add_control('ht_cart_icon_type', ['label' => __('Loại Icon', 'ht'),'section' => 'ht_cart_section','type' => 'radio','choices' => ['preset' => __('Chọn từ danh sách', 'ht'),'custom' => __('Tải ảnh lên', 'ht'),]]);
+
+    $wp_customize->add_setting('ht_cart_preset_icon', ['default' => 'fas fa-shopping-cart','sanitize_callback' => 'sanitize_text_field',]);
+    $wp_customize->add_control('ht_cart_preset_icon', ['label' => __('Chọn Icon có sẵn', 'ht'),'section' => 'ht_cart_section','type' => 'radio','choices' => ['fas fa-shopping-basket' => __('Giỏ Xách', 'ht'),'fas fa-shopping-cart' => __('Xe Đẩy', 'ht'),'fas fa-shopping-bag' => __('Túi Xách', 'ht'),],'active_callback' => function() use ($wp_customize) { return $wp_customize->get_setting('ht_cart_icon_type')->value() === 'preset'; },]);
+
+    $wp_customize->add_setting('ht_cart_custom_icon');
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'ht_cart_custom_icon', ['label' => __('Tải lên Icon tùy chỉnh', 'ht'),'section' => 'ht_cart_section','active_callback' => function() use ($wp_customize) { return $wp_customize->get_setting('ht_cart_icon_type')->value() === 'custom'; },]));
+
+    // MỚI: Tùy chọn kích thước font cho Icon (Theo yêu cầu)
+    $wp_customize->add_setting('ht_cart_icon_font_size', ['default' => 18, 'sanitize_callback' => 'absint']);
+    $wp_customize->add_control('ht_cart_icon_font_size', ['label' => __('Kích thước Font Icon (px)', 'ht'), 'section' => 'ht_cart_section', 'type' => 'number']);
+
+
+    // --- TÙY CHỈNH HIỂN THỊ & TEXT ---
+    $wp_customize->add_setting('ht_cart_display_title', ['default' => true, 'sanitize_callback' => 'wp_validate_boolean']);
+    $wp_customize->add_control('ht_cart_display_title', ['label' => __('Hiển thị chữ "Giỏ hàng"', 'ht'), 'section' => 'ht_cart_section', 'type' => 'checkbox']);
+
+    $wp_customize->add_setting('ht_cart_display_price', ['default' => false, 'sanitize_callback' => 'wp_validate_boolean']);
+    $wp_customize->add_control('ht_cart_display_price', ['label' => __('Hiển thị tổng giá tiền', 'ht'), 'section' => 'ht_cart_section', 'type' => 'checkbox']);
+
+    // MỚI: Tùy chọn kích thước font cho chữ (Theo yêu cầu)
+    $wp_customize->add_setting('ht_cart_text_font_size', ['default' => 14, 'sanitize_callback' => 'absint']);
+    $wp_customize->add_control('ht_cart_text_font_size', ['label' => __('Kích thước chữ (px)', 'ht'), 'section' => 'ht_cart_section', 'type' => 'number']);
+
+
+    // --- TÙY CHỈNH STYLE NÚT BẤM ---
+    $wp_customize->add_setting('ht_cart_padding', ['default' => '8px', 'sanitize_callback' => 'sanitize_text_field']);
+    $wp_customize->add_control('ht_cart_padding', ['label' => __('Padding nút (Vd: 8px)', 'ht'), 'section' => 'ht_cart_section', 'type' => 'text']);
+
+    // Style trạng thái bình thường
+    $wp_customize->add_setting('ht_cart_bg_color', ['default' => '', 'sanitize_callback' => 'sanitize_hex_color']);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_cart_bg_color', ['label' => __('Màu nền', 'ht'), 'section' => 'ht_cart_section']));
+
+    $wp_customize->add_setting('ht_cart_text_color', ['default' => '#000000', 'sanitize_callback' => 'sanitize_hex_color']);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_cart_text_color', ['label' => __('Màu chữ & Icon', 'ht'), 'section' => 'ht_cart_section']));
+
+    $wp_customize->add_setting('ht_cart_border_color', ['default' => '#000000', 'sanitize_callback' => 'sanitize_hex_color']);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_cart_border_color', ['label' => __('Màu viền', 'ht'), 'section' => 'ht_cart_section']));
+
+    // Style trạng thái HOVER
+    $wp_customize->add_setting('ht_cart_bg_color_hover', ['default' => '#000000', 'sanitize_callback' => 'sanitize_hex_color']);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_cart_bg_color_hover', ['label' => __('Màu nền (Khi di chuột)', 'ht'), 'section' => 'ht_cart_section']));
+
+    $wp_customize->add_setting('ht_cart_text_color_hover', ['default' => '#ffffff', 'sanitize_callback' => 'sanitize_hex_color']);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_cart_text_color_hover', ['label' => __('Màu chữ & Icon (Khi di chuột)', 'ht'), 'section' => 'ht_cart_section']));
+
+    $wp_customize->add_setting('ht_cart_border_color_hover', ['default' => '#ffffff', 'sanitize_callback' => 'sanitize_hex_color']);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_cart_border_color_hover', ['label' => __('Màu viền (Khi di chuột)', 'ht'), 'section' => 'ht_cart_section']));
+
+    // Tùy chỉnh viền
+    $wp_customize->add_setting('ht_cart_border_width', ['default' => 1, 'sanitize_callback' => 'absint']);
+    $wp_customize->add_control('ht_cart_border_width', ['label' => __('Độ dày viền (px)', 'ht'), 'section' => 'ht_cart_section', 'type' => 'number']);
+
+    $wp_customize->add_setting('ht_cart_border_radius', ['default' => 8, 'sanitize_callback' => 'absint']);
+    $wp_customize->add_control('ht_cart_border_radius', ['label' => __('Bo tròn viền (px)', 'ht'), 'section' => 'ht_cart_section', 'type' => 'number']);
+
+
+    //login
+    $wp_customize->add_section('ht_login_component_section', [
+        'title'    => __('Thiết lập Login', 'ht'),
+        'priority'   => 19,
+        'panel'      => 'header_main_panel',
+    ]);
+
+    // --- Cài đặt cho ICON CHÍNH (USER) ---
+    $wp_customize->add_setting('ht_login_show_icon', ['default' => true]);
+    $wp_customize->add_control('ht_login_show_icon_control', [
+        'label'    => __('Hiển thị Icon', 'ht'),
+        'section'  => 'ht_login_component_section', 'settings' => 'ht_login_show_icon', 'type'     => 'checkbox',
+    ]);
+
+    // MỚI: Tùy chỉnh kích thước icon
+    $wp_customize->add_setting('ht_login_icon_font_size', ['default' => 14]);
+    $wp_customize->add_control('ht_login_icon_font_size_control', [
+        'label'       => __('Kích thước Icon (px)', 'ht'),
+        'section'     => 'ht_login_component_section', 'settings'    => 'ht_login_icon_font_size', 'type'        => 'number',
+        'input_attrs' => ['min' => 10, 'max' => 30, 'step' => 1],
+    ]);
+
+    $wp_customize->add_setting('ht_login_icon_bg_color', ['default' => '#000000']);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_login_icon_bg_color_control', [
+        'label'    => __('Màu nền Icon', 'ht'),
+        'section'  => 'ht_login_component_section', 'settings' => 'ht_login_icon_bg_color',
+    ]));
+
+    $wp_customize->add_setting('ht_login_icon_border_radius', ['default' => 50]);
+    $wp_customize->add_control('ht_login_icon_border_radius_control', [
+        'label'       => __('Bo góc Icon (px)', 'ht'),
+        'section'     => 'ht_login_component_section', 'settings'    => 'ht_login_icon_border_radius', 'type'        => 'number',
+        'input_attrs' => ['min' => 0, 'max' => 50, 'step' => 1],
+    ]);
+
+    // --- Cài đặt cho NHÃN (LABEL) & TEXT ---
+    $wp_customize->add_setting('ht_login_show_label', ['default' => true]);
+    $wp_customize->add_control('ht_login_show_label_control', [
+        'label'    => __('Hiển thị Nhãn', 'ht'),
+        'section'  => 'ht_login_component_section', 'settings' => 'ht_login_show_label', 'type'     => 'checkbox',
+    ]);
+
+    $wp_customize->add_setting('ht_login_label_text', ['default' => 'Đăng nhập']);
+    $wp_customize->add_control('ht_login_label_text_control', [
+        'label'    => __('Nội dung Nhãn (khi chưa đăng nhập)', 'ht'),
+        'section'  => 'ht_login_component_section', 'settings' => 'ht_login_label_text', 'type'     => 'text',
+    ]);
+
+    // MỚI: Tùy chỉnh màu chữ
+    $wp_customize->add_setting('ht_login_text_color', ['default' => '#333333']);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_login_text_color_control', [
+        'label'    => __('Màu chữ', 'ht'),
+        'section'  => 'ht_login_component_section', 'settings' => 'ht_login_text_color',
+    ]));
+
+    // MỚI: Tùy chỉnh màu chữ khi hover
+    $wp_customize->add_setting('ht_login_text_hover_color', ['default' => '#007bff']);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_login_text_hover_color_control', [
+        'label'    => __('Màu chữ khi Hover', 'ht'),
+        'section'  => 'ht_login_component_section', 'settings' => 'ht_login_text_hover_color',
+    ]));
+
+    $wp_customize->add_setting('ht_login_show_username', ['default' => true]);
+    $wp_customize->add_control('ht_login_show_username_control', [
+        'label'       => __('Hiển thị Tên người dùng (khi đã đăng nhập)', 'ht'),
+        'description' => __('Nếu bật, sẽ hiển thị "Chào, [Tên]". Nếu tắt, sẽ không hiển thị gì.', 'ht'),
+        'section'     => 'ht_login_component_section', 'settings'    => 'ht_login_show_username', 'type'        => 'checkbox',
+    ]);
+
+    // --- Cài đặt cho ICON ĐĂNG XUẤT ---
+    // MỚI: Tùy chỉnh màu icon đăng xuất
+    $wp_customize->add_setting('ht_login_logout_icon_color', ['default' => '#6c757d']);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_login_logout_icon_color_control', [
+        'label'    => __('Màu Icon Đăng xuất', 'ht'),
+        'section'  => 'ht_login_component_section', 'settings' => 'ht_login_logout_icon_color',
+    ]));
+
+    // MỚI: Tùy chỉnh màu icon đăng xuất khi hover
+    $wp_customize->add_setting('ht_login_logout_icon_hover_color', ['default' => '#dc3545']);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_login_logout_icon_hover_color_control', [
+        'label'    => __('Màu Icon Đăng xuất khi Hover', 'ht'),
+        'section'  => 'ht_login_component_section', 'settings' => 'ht_login_logout_icon_hover_color',
+    ]));
+
+    // --- MỚI: Cài đặt cho KIỂU DÁNG NÚT ĐĂNG NHẬP ---
+    $wp_customize->add_setting('ht_login_button_bg_color', ['default' => 'rgba(0,0,0,0)']); // Mặc định trong suốt
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_login_button_bg_color_control', [
+        'label'       => __('Màu nền Nút Đăng nhập', 'ht'),
+        'description' => __('Áp dụng cho nhãn "Đăng nhập" khi chưa đăng nhập.', 'ht'),
+        'section'     => 'ht_login_component_section', 'settings'    => 'ht_login_button_bg_color',
+    ]));
+
+    $wp_customize->add_setting('ht_login_button_bg_hover_color', ['default' => '#e9ecef']);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_login_button_bg_hover_color_control', [
+        'label'    => __('Màu nền Nút Đăng nhập khi Hover', 'ht'),
+        'section'  => 'ht_login_component_section', 'settings' => 'ht_login_button_bg_hover_color',
+    ]));
+
+    $wp_customize->add_setting('ht_login_button_padding', ['default' => '8px 12px']);
+    $wp_customize->add_control('ht_login_button_padding_control', [
+        'label'       => __('Padding Nút Đăng nhập', 'ht'),
+        'description' => __('Ví dụ: 8px 12px', 'ht'),
+        'section'     => 'ht_login_component_section', 'settings'    => 'ht_login_button_padding', 'type'        => 'text',
+    ]);
+
+    $wp_customize->add_setting('ht_login_button_border_radius', ['default' => 4]);
+    $wp_customize->add_control('ht_login_button_border_radius_control', [
+        'label'       => __('Bo góc Nút Đăng nhập (px)', 'ht'),
+        'section'     => 'ht_login_component_section', 'settings'    => 'ht_login_button_border_radius', 'type'        => 'number',
+        'input_attrs' => ['min' => 0, 'max' => 50, 'step' => 1],
+    ]);
+
+    //sticky down
+    $wp_customize->add_section('ht_sticky_header_section', [
+        'title'    => __('Sticky Header', 'ht'),
+        'priority' => 10,
+        'panel'       => 'header_main_panel',
+    ]);
+
+    // 2. Setting và Control cho Top Bar
+    $wp_customize->add_setting('ht_sticky_topbar_enabled', [
+        'default'           => false,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ]);
+    $wp_customize->add_control('ht_sticky_topbar_control', [
+        'label'    => __('Top Bar - Sticky on Scroll', 'ht'),
+        'section'  => 'ht_sticky_header_section',
+        'settings' => 'ht_sticky_topbar_enabled',
+        'type'     => 'checkbox',
+    ]);
+
+    // 3. Setting và Control cho Header Main
+    $wp_customize->add_setting('ht_sticky_header_main_enabled', [
+        'default'           => false,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ]);
+    $wp_customize->add_control('ht_sticky_header_main_control', [
+        'label'    => __('Header Main - Sticky on Scroll', 'ht'),
+        'section'  => 'ht_sticky_header_section',
+        'settings' => 'ht_sticky_header_main_enabled',
+        'type'     => 'checkbox',
+    ]);
+
+    // 4. Setting và Control cho Header Bottom
+    $wp_customize->add_setting('ht_sticky_header_bottom_enabled', [
+        'default'           => false,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ]);
+    $wp_customize->add_control('ht_sticky_header_bottom_control', [
+        'label'    => __('Header Bottom - Sticky on Scroll', 'ht'),
+        'section'  => 'ht_sticky_header_section',
+        'settings' => 'ht_sticky_header_bottom_enabled',
+        'type'     => 'checkbox',
+    ]);
 }
 add_action('customize_register', 'mytheme_customize_register');
