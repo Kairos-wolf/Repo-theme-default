@@ -1,72 +1,102 @@
+/* File: headerbottom-builder.css (Đã cập nhật) */
+
 .ht-headerbottom-sortable {
-  list-style: none;
-  min-height: 60px;
+    list-style: none;
+    min-height: 52px;
+    padding: 5px;
+    border-radius: 4px;
 }
 
 .ht-headerbottom-sortable-item {
-  background-color: #f9f9f9;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  cursor: move;
-  text-align: center;
-  flex-shrink: 0;
+    background-color: #f0f0f0;
+    padding: 6px 10px;
+    margin: 2px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: move;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
-.ht-headerbottom-active-areas {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Chia thành 3 cột bằng nhau */
-    gap: 16px;
+.ht-headerbottom-item-icon {
+    font-size: 18px;
+}
+
+.ht-headerbottom-item-label {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.ui-state-highlight {
+    height: 38px;
+    width: 40px;
+    display: inline-block;
+    background-color: #e9ecef;
+    border: 1px dashed #6c757d;
+    border-radius: 4px;
+    margin: 2px;
+}
+
+.ht-headerbottom-device-section {
+    margin-top: 20px;
     padding: 10px;
-    background-color: #f8f9fa;
+    background: #f8f9fa;
     border: 1px solid #dee2e6;
     border-radius: 4px;
 }
 
+.ht-headerbottom-device-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.ht-headerbottom-active-areas {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+}
+
 .ht-headerbottom-area {
     background-color: #fff;
-    padding: 8px;
+    padding: 5px;
     border-radius: 4px;
     border: 1px solid #ced4da;
-    display: flex;
-    flex-direction: column;
 }
 
 .ht-headerbottom-area-title {
+    font-size: 12px;
     font-weight: 600;
-    margin-bottom: 8px;
     text-align: center;
     color: #495057;
-    padding-bottom: 5px;
-    border-bottom: 1px solid #e9ecef;
+    margin: 0 0 5px 0;
 }
 
 .ht-headerbottom-area .ht-headerbottom-sortable {
     border: 1px dashed #a0a5aa;
     background-color: #fdfdfd;
-    min-height: 80px;
-    flex-grow: 1;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 5px;
+    flex-wrap: wrap;
+    align-content: flex-start;
 }
 
-/* 1. Ẩn phần chữ (label) của item */
-.ht-headerbottom-area .ht-headerbottom-sortable-item .text-sm {
+.ht-headerbottom-available-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    border: 1px dashed #a0a5aa;
+}
+
+.ht-headerbottom-active-areas .ht-headerbottom-sortable-item .ht-headerbottom-item-label {
     display: none;
 }
 
-/* 2. Điều chỉnh icon: đưa font-size về 18px và xóa margin dưới */
-.ht-headerbottom-area .ht-headerbottom-sortable-item .text-2xl {
-    font-size: 18px;
-}
-
-.ui-state-highlight { 
-    height: 44px;
-    width: 44px;
-    background-color: #e9ecef; 
-    border: 1px dashed #6c757d;
-    border-radius: 5px;
-    margin: 4px;
+.ht-headerbottom-active-areas .ht-headerbottom-sortable-item {
+    padding: 8px;
+    min-width: 30px;
 }

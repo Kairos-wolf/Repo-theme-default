@@ -1,7 +1,62 @@
 <?php
+// =========================================================================
+// BƯỚC 1: KIỂM TRA ĐIỀU KIỆN HIỂN THỊ TOPBAR
+// =========================================================================
+
+// Lấy cài đặt bật/tắt từ Customizer
+$show_desktop = get_theme_mod('ht_topbar_show_desktop', true);
+$show_mobile  = get_theme_mod('ht_topbar_show_mobile', true);
+
+// Lấy cấu trúc layout
+$layout_json = get_theme_mod('ht_topbar_layout', json_encode([]));
+$layout = json_decode($layout_json, true);
+
+$desktop_layout = $layout['desktop'] ?? [];
+$mobile_layout  = $layout['mobile'] ?? [];
+
+// Kiểm tra xem các layout có rỗng không (không có khối nào được thêm vào)
+$is_desktop_empty = empty(array_filter(array_merge($desktop_layout['left'] ?? [], $desktop_layout['center'] ?? [], $desktop_layout['right'] ?? [])));
+$is_mobile_empty  = empty(array_filter(array_merge($mobile_layout['left'] ?? [], $mobile_layout['center'] ?? [], $mobile_layout['right'] ?? [])));
+
+// Quyết định xem có nên render các phần tương ứng không
+$should_render_desktop = $show_desktop && !$is_desktop_empty;
+$should_render_mobile  = $show_mobile && !$is_mobile_empty;
+
+// Nếu cả hai giao diện đều không cần hiển thị, dừng thực thi toàn bộ file này
+if (!$should_render_desktop && !$should_render_mobile) {
+    return;
+}
+
+// =========================================================================
+// BƯỚC 2: CHUẨN BỊ STYLE, CLASS VÀ HÀM RENDER
+// =========================================================================
+
 // Kiểm tra xem sticky có được bật cho topbar không
 $is_sticky = get_theme_mod('ht_sticky_topbar_enabled', false);
 $sticky_class = $is_sticky ? ' ht-sticky-item' : '';
+
+// Lấy các giá trị tùy chỉnh style cho Top Bar từ Customizer
+$bg_color   = get_theme_mod('topbar_background_color', '#f8f9fa');
+$bg_image   = get_theme_mod('topbar_bg_image', '');
+$color      = get_theme_mod('topbar_color', '#333333');
+$margin     = get_theme_mod('topbar_margin', '0');
+$padding    = get_theme_mod('topbar_padding', '10px 0');
+$radius     = get_theme_mod('topbar_border_radius', '0');
+
+// Tạo chuỗi style inline
+$topbar_styles = "background-color: {$bg_color}; color: {$color}; margin: {$margin}; padding: {$padding}; border-radius: {$radius};";
+if (!empty($bg_image)) {
+    $topbar_styles .= " background-image: url('" . esc_url($bg_image) . "'); background-size: cover; background-position: center;";
+}
+
+// **THÊM MỚI**: Tạo các class CSS để kiểm soát hiển thị toàn bộ Top Bar
+$visibility_classes = '';
+if (!$should_render_desktop) {
+    $visibility_classes .= ' d-md-none'; // Nếu desktop không hiển thị, thì ẩn nó trên màn hình lớn
+}
+if (!$should_render_mobile) {
+    $visibility_classes .= ' d-none d-md-block'; // Nếu mobile không hiển thị, thì ẩn nó trên màn hình nhỏ
+}
 
 // Hàm trợ giúp để render một item, tránh lặp code
 if (!function_exists('render_topbar_item')) {
@@ -58,47 +113,49 @@ if (!function_exists('render_topbar_item')) {
 }
 ?>
 
-<nav class="ht-topbar-builder<?php echo esc_attr($sticky_class); ?>">
-    <div class="topbar row align-items-center py-2">
-        <?php
-        // Lấy layout từ Customizer, với cấu trúc mặc định mới
-        $default_layout = json_encode(['left' => ['menu'], 'center' => ['html1'], 'right' => ['social']]);
-        $layout_json = get_theme_mod('ht_topbar_layout', $default_layout);
-        $layout = json_decode($layout_json, true);
-
-        // Đảm bảo $layout luôn là một mảng hợp lệ
-        if (!is_array($layout) || !isset($layout['left'])) {
-             $layout = json_decode($default_layout, true);
-        }
-
-        $positions = ['left', 'center', 'right'];
-        ?>
-
-        <div class="topbar-section topbar-left col-md-4 d-flex justify-content-start align-items-center gap-3">
+<nav class="ht-topbar-builder<?php echo esc_attr($sticky_class); ?><?php echo esc_attr($visibility_classes); ?>" style="<?php echo esc_attr($topbar_styles); ?>">
+    <div class="container">
+        <div class="topbar row align-items-center">
             <?php
-            if (!empty($layout['left']) && is_array($layout['left'])) {
-                foreach ($layout['left'] as $item_id) {
-                    render_topbar_item($item_id);
-                }
-            }
-            ?>
-        </div>
+            // Mảng chứa thông tin layout cho cả hai giao diện
+            $devices = [
+                'desktop' => [
+                    'should_render' => $should_render_desktop,
+                    'visibility_class' => 'd-none d-md-flex',
+                    'col_class' => 'col-md-4',
+                    'layout' => $desktop_layout,
+                ],
+                'mobile' => [
+                    'should_render' => $should_render_mobile,
+                    'visibility_class' => 'd-md-none',
+                    'col_class' => 'col',
+                    'layout' => $mobile_layout,
+                ]
+            ];
 
-        <div class="topbar-section topbar-center col-md-4 d-flex justify-content-center align-items-center gap-3">
-             <?php
-            if (!empty($layout['center']) && is_array($layout['center'])) {
-                foreach ($layout['center'] as $item_id) {
-                    render_topbar_item($item_id);
-                }
-            }
-            ?>
-        </div>
+            // Vòng lặp để render cho cả desktop và mobile
+            foreach ($devices as $device => $config) {
+                if ($config['should_render']) {
+                    // Render cột TRÁI
+                    echo '<div class="topbar-section topbar-left-' . $device . ' ' . $config['col_class'] . ' ' . $config['visibility_class'] . ' justify-content-start align-items-center gap-3">';
+                    if (!empty($config['layout']['left'])) {
+                        foreach ($config['layout']['left'] as $item_id) { render_topbar_item($item_id); }
+                    }
+                    echo '</div>';
 
-        <div class="topbar-section topbar-right col-md-4 d-flex justify-content-end align-items-center gap-3">
-             <?php
-            if (!empty($layout['right']) && is_array($layout['right'])) {
-                foreach ($layout['right'] as $item_id) {
-                    render_topbar_item($item_id);
+                    // Render cột GIỮA
+                    echo '<div class="topbar-section topbar-center-' . $device . ' ' . $config['col_class'] . ' ' . $config['visibility_class'] . ' justify-content-center align-items-center gap-3">';
+                    if (!empty($config['layout']['center'])) {
+                        foreach ($config['layout']['center'] as $item_id) { render_topbar_item($item_id); }
+                    }
+                    echo '</div>';
+
+                    // Render cột PHẢI
+                    echo '<div class="topbar-section topbar-right-' . $device . ' ' . $config['col_class'] . ' ' . $config['visibility_class'] . ' justify-content-end align-items-center gap-3">';
+                    if (!empty($config['layout']['right'])) {
+                        foreach ($config['layout']['right'] as $item_id) { render_topbar_item($item_id); }
+                    }
+                    echo '</div>';
                 }
             }
             ?>

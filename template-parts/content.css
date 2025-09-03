@@ -1,0 +1,170 @@
+/* =================================================================== */
+/* === Styling cho trang Archive/Blog (Trang danh sách bài viết) === */
+/* =================================================================== */
+
+/* Bố cục chung */
+.blog-archive-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+/* Kiểu cho mỗi bài viết trong danh sách */
+.blog-post-item {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+    overflow: hidden; /* Quan trọng để bo góc và hiệu ứng hoạt động đúng */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.blog-post-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* === CẬP NHẬT: CSS CHO ẢNH ĐẠI DIỆN CHUYÊN NGHIỆP HƠN === */
+.post-thumbnail {
+    display: block;
+    overflow: hidden; /* Ẩn phần ảnh thừa ra khi phóng to */
+    background-color: #f0f2f5; /* Màu nền cho khung khi ảnh đang tải */
+    aspect-ratio: 16 / 9; /* Tạo khung ảnh tỷ lệ 16:9 hiện đại */
+}
+
+.post-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Đảm bảo ảnh lấp đầy khung mà không bị méo */
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Hiệu ứng chuyển động mượt mà */
+}
+
+.blog-post-item:hover .post-thumbnail img {
+    transform: scale(1.05); /* Phóng to ảnh lên 5% khi di chuột vào cả thẻ bài viết */
+}
+/* === KẾT THÚC CẬP NHẬT === */
+
+
+/* Phần header (chứa tiêu đề, meta) trong card */
+.blog-post-item .entry-header {
+    padding: 20px 25px 15px;
+}
+
+.blog-post-item .entry-title {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+}
+
+.blog-post-item .entry-title a {
+    text-decoration: none;
+    color: #333;
+}
+.blog-post-item .entry-title a:hover {
+    color: #0073aa;
+}
+
+/* Thông tin meta */
+.entry-meta {
+    font-size: 0.85em;
+    color: #777;
+    margin-bottom: 15px;
+}
+
+.entry-meta span {
+    margin-right: 15px;
+}
+
+.entry-meta a {
+    color: #777;
+    text-decoration: none;
+}
+.entry-meta a:hover {
+    color: #333;
+}
+
+/* Tóm tắt */
+.entry-summary {
+    padding: 0 25px;
+    color: #555;
+    flex-grow: 1; /* Đẩy footer xuống dưới */
+}
+
+/* Footer (chứa link đọc thêm) */
+.entry-footer {
+    padding: 15px 25px 20px;
+    margin-top: auto; /* Đẩy footer xuống cuối cùng */
+}
+
+.read-more-link {
+    font-weight: bold;
+    text-decoration: none;
+    color: #0073aa;
+}
+
+
+/* =================================================================== */
+/* === Styling cho trang Single Post (Trang chi tiết bài viết) === */
+/* =================================================================== */
+
+.single-post-content {
+    background: #fff;
+    padding: 40px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Header của bài viết chi tiết */
+.single-post-content .entry-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.single-post-content .entry-header .entry-meta {
+    margin-bottom: 10px;
+    color: #777;
+    font-size: 0.9em;
+}
+
+.single-post-content .entry-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+/* Ảnh đại diện trong trang chi tiết */
+.single-post-content .post-thumbnail {
+    margin-bottom: 30px;
+}
+
+.single-post-content .post-thumbnail img {
+    border-radius: 8px;
+}
+
+/* Nội dung chính của bài viết */
+.single-post-content .entry-content {
+    line-height: 1.8;
+    font-size: 1.1rem;
+}
+.single-post-content .entry-content p {
+    margin-bottom: 1.5em;
+}
+.single-post-content .entry-content h2,
+.single-post-content .entry-content h3 {
+    margin-top: 2em;
+    margin-bottom: 1em;
+}
+
+/* Footer của bài viết chi tiết */
+.single-post-content .entry-footer {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.tag-links span {
+    font-weight: bold;
+}

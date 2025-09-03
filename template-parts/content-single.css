@@ -1,0 +1,262 @@
+/* =================================================================== */
+/* === Styling cho trang Single Post (Cập nhật toàn diện) === */
+/* =================================================================== */
+
+/* --- Bố cục chính (Đã cập nhật) --- */
+.single-post-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.newspaper-article-full {
+    max-width: 100%;
+    /* Nội dung rộng ra bằng container */
+    margin: 0 auto;
+}
+
+/* --- Hộp tác giả (Đã cập nhật) --- */
+.author-box {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.author-avatar img {
+    border-radius: 50%;
+}
+
+.author-name {
+    margin: 0 0 0.5rem;
+    font-size: 1.2rem;
+}
+
+.author-description {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.author-rating {
+    margin-bottom: 0.5rem;
+    color: #FFC107;
+    /* Màu vàng cho sao */
+    font-size: 1.2rem;
+}
+
+.author-rating .half {
+    position: relative;
+    display: inline-block;
+}
+
+.author-rating .half::before {
+    content: '\2605';
+    /* Mã ký tự ngôi sao đầy đủ */
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50%;
+    overflow: hidden;
+}
+
+/* --- Bài viết liên quan (Slider) --- */
+.related-posts-section {
+    position: relative;
+    /* Cần thiết cho vị trí của các nút */
+    margin-top: 4rem;
+    padding: 2rem 0;
+    border-top: 1px solid #e0e0e0;
+}
+
+.related-posts-section .section-title {
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.swiper-slide {
+    height: auto;
+    /* Cho phép slide tự điều chỉnh chiều cao */
+}
+
+.related-post-item a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+}
+
+.related-post-thumbnail {
+    overflow: hidden;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    aspect-ratio: 16 / 9;
+    background: #f0f0f0;
+}
+
+.related-post-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.related-post-item:hover .related-post-thumbnail img {
+    transform: scale(1.05);
+}
+
+.related-post-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+/* Nút điều hướng cho Slider */
+.swiper-button-prev,
+.swiper-button-next {
+    color: #0073aa;
+    top: 55%;
+    /* Điều chỉnh vị trí dọc */
+}
+
+/* --- Khu vực bình luận --- */
+#comments {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+.comment-list {
+    list-style: none;
+    padding: 0;
+}
+
+.comment-list .comment {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.comment-author {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 0.5rem;
+}
+
+.comment-author .avatar {
+    border-radius: 50%;
+}
+
+.comment-meta {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+.comment-content {
+    padding-left: 65px;
+    /* Căn lề với avatar */
+}
+
+/* Giữ lại các style cũ cần thiết */
+.entry-header {
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.meta-category a {
+    background-color: #0073aa;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.entry-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 1rem 0;
+    line-height: 1.2;
+    color: #1a1a1a;
+}
+
+.entry-excerpt {
+    font-size: 1.25rem;
+    color: #555;
+    margin: 0 0 1.5rem;
+    line-height: 1.6;
+}
+
+.entry-meta-details {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.entry-meta-details .separator {
+    color: #ccc;
+}
+
+.entry-meta-details a {
+    color: #333;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.social-share {
+    margin: 0 auto 2rem;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.social-icon {
+    display: inline-block;
+    padding: 8px 15px;
+    border-radius: 5px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: opacity 0.3s;
+}
+
+.social-icon:hover {
+    opacity: 0.85;
+}
+
+.social-icon.facebook {
+    background-color: #1877F2;
+}
+
+.social-icon.twitter {
+    background-color: #1DA1F2;
+}
+
+.social-icon.linkedin {
+    background-color: #0A66C2;
+}
+
+.post-thumbnail {
+    margin-bottom: 2rem;
+}
+
+.post-thumbnail img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.entry-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+}

@@ -3,6 +3,7 @@
 require_once get_template_directory() . '/inc/header/header-function/setup.php';
 require_once get_template_directory() . '/inc/header/header-function/header-custom.php';
 require_once get_template_directory() . '/inc/footer/footer-function/footer-custom.php';
+require_once get_template_directory() . '/inc/customize/blog-customizer.php';
 
 // Header builder
 require_once get_template_directory() . '/inc/header/header-builder/customizer.php';
@@ -17,6 +18,8 @@ require_once get_template_directory() . '/inc/footer/footer-builder/class-footer
 // Contact Form - Admin
 require_once get_template_directory() . '/inc/form/form-function.php';
 require_once get_template_directory() . '/inc/form/my-theme-smtp-settings.php';
+
+
 
 
 // Advanced
@@ -127,7 +130,7 @@ function ht_display_search_component() {
     // Lấy các tùy chọn cho ô tìm kiếm từ Customizer
     $search_ui = get_theme_mod('header_search_ui', 'default');
     $search_placeholder = get_theme_mod('search_placeholder', 'Tìm kiếm...');
-    $search_button_html = get_theme_mod('search_button_html', 'Tìm');
+    $search_button_html = get_theme_mod('search_button_html', '<i class="fa-solid fa-magnifying-glass"></i>');
     $search_width = get_theme_mod('search_width', '200');
     $search_height = get_theme_mod('search_height', '40');
     $search_border_radius_left = get_theme_mod('search_border_radius_left', '0');
@@ -135,7 +138,7 @@ function ht_display_search_component() {
     $button_text_color = get_theme_mod('search_button_text_color', '#ffffff');
     $button_bg_color = get_theme_mod('search_button_background_color', '#0073aa');
     $button_font_size = get_theme_mod('search_button_font_size', '16px');
-    $button_padding = get_theme_mod('search_button_padding', '10px 20px');
+    $button_padding = get_theme_mod('search_button_padding', '10px');
     $button_border_radius = get_theme_mod('search_button_border_radius', '0');
 
     // Tạo chuỗi style cho input và button
@@ -162,6 +165,42 @@ function ht_display_search_component() {
     }
     
     $output .= '</div>';
+    // --- THÊM MỚI: CSS tùy chỉnh cho giao diện mobile ---
+        static $is_css_printed = false;
+        if (!$is_css_printed) {
+            $is_css_printed = true;
+            $mobile_css = <<<'CSS'
+        <style>
+            /*Mobile / Tablet*/
+            @media (max-width: 991px) { 
+                .ht-mobile-menu-inner .ht-search-component form {
+                    border: 1px solid #dee2e6;
+                    border-radius: 6px;
+                    overflow: hidden;
+                    width: 100%;
+                    display: flex;
+                }
+
+                .ht-mobile-menu-inner .ht-search-component input[type="search"] {
+                    border: none !important;
+                    box-shadow: none !important;
+                    background-color: transparent !important;
+                    flex-grow: 1;
+                }
+
+                .ht-mobile-menu-inner .ht-search-component button.btn {
+                    border: none !important;
+                    margin-right: -5px;
+                    margin-top: 0;
+                    flex-shrink: 0;
+                    justify-content: center;
+                }
+            }
+        </style>
+        CSS;
+            echo $mobile_css;
+        }
+    // --- KẾT THÚC PHẦN THÊM MỚI ---
 
     echo $output;
 }
@@ -226,10 +265,10 @@ function ht_add_css()
         .ht-language-switcher .dropdown-toggle {
             background-color: transparent !important;
             border: none !important;
-            color: inherit !important; /* Lấy màu chữ từ topbar */
+            color: inherit !important;
             padding: 0.25rem 0.5rem;
-            font-size: 0.875rem; /* Kích thước chữ sm */
-            box-shadow: none !important; /* Bỏ đổ bóng khi focus */
+            font-size: 0.875rem;
+            box-shadow: none !important;
         }
 
         /* Style cho lá cờ */
@@ -242,11 +281,15 @@ function ht_add_css()
 
         /* Căn chỉnh dropdown menu sang phải nếu cần */
         .ht-language-switcher .dropdown-menu {
-            min-width: auto;
+            position: absolute !important;
+            top: 100% !important;  
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            right: 0;
+            z-index: 1111;
             border-radius: 0.25rem;
+            margin-top: 0.5rem !important;
         }
-
-        
     </style>
     CSS;
 
@@ -254,10 +297,39 @@ function ht_add_css()
     ?>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // --- PHẦN TOOLTIP GỐC (GIỮ NGUYÊN) ---
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
+
+            // --- [SỬA] JAVASCRIPT MẠNH HƠN CHO DROPDOWN NGÔN NGỮ ---
+            var langSwitcher = document.querySelector('.ht-language-switcher .dropdown');
+
+            if (langSwitcher) {
+                // Lắng nghe sự kiện KHI DROPDOWN BẮT ĐẦU MỞ
+                langSwitcher.addEventListener('show.bs.dropdown', function () {
+                    // Tìm đến thẻ cha chứa cả thanh header (ví dụ: #top-bar, .header-top)
+                    // Quan trọng: bạn có thể cần thay đổi selector này cho đúng với theme của bạn
+                    var headerContainer = langSwitcher.closest('#top-bar, .header-top, #masthead');
+                    
+                    if (headerContainer) {
+                        // Tăng z-index của cả thanh header lên rất cao
+                        headerContainer.style.zIndex = '99999';
+                    }
+                });
+
+                // Lắng nghe sự kiện KHI DROPDOWN ĐÃ ĐÓNG XONG
+                langSwitcher.addEventListener('hidden.bs.dropdown', function () {
+                    var headerContainer = langSwitcher.closest('#top-bar, .header-top, #masthead');
+
+                    if (headerContainer) {
+                        // Trả z-index của thanh header về trạng thái ban đầu
+                        // Việc này rất quan trọng để không ảnh hưởng đến các phần tử khác
+                        headerContainer.style.zIndex = '';
+                    }
+                });
+            }
         });
     </script>
     <?php
@@ -656,7 +728,7 @@ add_action('wp_head', 'ht_login_component_dynamic_styles');
 function ht_sticky_header_scripts() {
     ?>
     <style>
-        /* CSS cho Sticky Header */
+        /* CSS cho Sticky Header (giữ nguyên) */
         .ht-sticky-wrapper {
             position: relative;
             z-index: 1020;
@@ -664,48 +736,24 @@ function ht_sticky_header_scripts() {
 
         .ht-sticky-wrapper.is-sticky {
             position: fixed;
-            /* Thuộc tính 'top' sẽ được JS xử lý động */
-            left: 0;
-            right: 0;
-            width: 100%;
+            left: 0; right: 0; width: 100%;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            
             transform: translateY(-100%);
             animation: jumpDown 0.5s forwards ease-out;
         }
 
-        .sticky-placeholder {
-            display: none;
-        }
-
-        .sticky-placeholder.active {
-            display: block;
-        }
+        .sticky-placeholder { display: none; }
+        .sticky-placeholder.active { display: block; }
 
         @keyframes jumpDown {
-            from {
-                transform: translateY(-100%);
-            }
-            to {
-                transform: translateY(0);
-            }
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
         }
     </style>
     <script>
     document.addEventListener("DOMContentLoaded", function() {
         const stickyItems = document.querySelectorAll('.ht-sticky-item');
         if (stickyItems.length === 0) return;
-
-        // --- BẮT ĐẦU PHẦN CẬP NHẬT ---
-
-        // MỚI: Tự động phát hiện chiều cao của Admin Bar
-        let adminBarHeight = 0;
-        const adminBar = document.getElementById('wpadminbar');
-        if (adminBar) {
-            adminBarHeight = adminBar.offsetHeight;
-        }
-        
-        // --- KẾT THÚC PHẦN CẬP NHẬT ---
 
         const wrapper = document.createElement('div');
         wrapper.classList.add('ht-sticky-wrapper');
@@ -718,21 +766,51 @@ function ht_sticky_header_scripts() {
         placeholder.classList.add('sticky-placeholder');
         wrapper.parentNode.insertBefore(placeholder, wrapper);
         
-        let initialOffsetTop = wrapper.offsetTop;
-        let totalHeight = wrapper.offsetHeight;
+        // --- BẮT ĐẦU PHẦN CẬP NHẬT LOGIC ---
 
+        // Khai báo các biến sẽ được tính toán lại
+        let initialOffsetTop, totalHeight, adminBarHeight;
+
+        /**
+         * HÀM MỚI: Tính toán lại tất cả các giá trị cần thiết.
+         * Hàm này sẽ được gọi khi tải trang và mỗi khi thay đổi kích thước cửa sổ.
+         */
+        function recalculateStickyValues() {
+            // Tạm thời bỏ sticky để đo đạc cho chính xác
+            wrapper.classList.remove('is-sticky');
+
+            // Tính chiều cao admin bar
+            adminBarHeight = 0;
+            const adminBar = document.getElementById('wpadminbar');
+            if (adminBar) {
+                // Chỉ lấy chiều cao admin bar nếu nó thực sự hiển thị (tránh lỗi mobile)
+                if(getComputedStyle(adminBar).display !== 'none') {
+                    adminBarHeight = adminBar.offsetHeight;
+                }
+            }
+
+            // Đo lại vị trí và chiều cao của wrapper
+            initialOffsetTop = wrapper.offsetTop;
+            totalHeight = wrapper.offsetHeight;
+        }
+
+        /**
+         * HÀM XỬ LÝ CUỘN TRANG (giữ nguyên logic chính)
+         * Nó sẽ sử dụng các biến đã được `recalculateStickyValues` cập nhật.
+         */
         function handleScroll() {
-            // Tính toán điểm bắt đầu dính, trừ đi chiều cao của admin bar
-            const stickyStartPoint = initialOffsetTop - adminBarHeight;
+            let topOffset = 0;
+            if (window.innerWidth > 782) {
+                topOffset = adminBarHeight;
+            }
+
+            const stickyStartPoint = initialOffsetTop - topOffset;
 
             if (window.scrollY > stickyStartPoint) {
                 if (!wrapper.classList.contains('is-sticky')) {
                     placeholder.style.height = totalHeight + 'px';
                     placeholder.classList.add('active');
-                    
-                    // MỚI: Đặt vị trí top của header bằng chiều cao của admin bar
-                    wrapper.style.top = adminBarHeight + 'px'; 
-                    
+                    wrapper.style.top = topOffset + 'px'; 
                     wrapper.classList.add('is-sticky');
                 }
             } else {
@@ -740,17 +818,304 @@ function ht_sticky_header_scripts() {
                     wrapper.classList.remove('is-sticky');
                     placeholder.classList.remove('active');
                     placeholder.style.height = '0px';
-
-                    // MỚI: Trả lại vị trí top về mặc định
                     wrapper.style.top = '0px'; 
                 }
             }
         }
 
+        // --- GẮN CÁC SỰ KIỆN ---
+        
+        // Lắng nghe sự kiện cuộn trang
         window.addEventListener('scroll', handleScroll);
-        handleScroll(); 
+
+        // MỚI: Lắng nghe sự kiện resize cửa sổ một cách tối ưu (debounce)
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            // Chỉ chạy hàm sau khi người dùng ngừng resize 100ms
+            resizeTimer = setTimeout(function() {
+                recalculateStickyValues(); // Tính toán lại giá trị
+                handleScroll(); // Áp dụng lại logic sticky với giá trị mới
+            }, 100);
+        });
+        
+        // Chạy lần đầu khi tải trang xong
+        recalculateStickyValues();
+        handleScroll();
+
+        // --- KẾT THÚC PHẦN CẬP NHẬT LOGIC ---
     });
     </script>
     <?php
 }
 add_action('wp_footer', 'ht_sticky_header_scripts');
+
+function ht_mobile_menu_scripts() {
+    ?>
+    <style>
+        /* Khung Menu chính */
+        .ht-mobile-overlay {
+            position: fixed; top: 0; bottom: 0;
+            width: 340px;
+            max-width: 90%;
+            z-index: 10001;
+            transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
+            background-color: #ffffff; /* Nền trắng sạch sẽ */
+            box-shadow: 5px 0 25px rgba(0,0,0,0.15);
+            overflow-y: auto;
+            display: block !important;
+        }
+        
+        /* Tương thích với Admin Bar */
+        body.admin-bar .ht-mobile-overlay { top: 32px; }
+        @media screen and (max-width: 782px) {
+            body.admin-bar .ht-mobile-overlay { top: 46px; }
+        }
+        
+        .ht-mobile-overlay.position-left { left: 0; transform: translateX(-100%); }
+        .ht-mobile-overlay.position-right { right: 0; transform: translateX(100%); }
+        .ht-mobile-overlay.is-open { transform: translateX(0); }
+
+        .ht-mobile-menu-inner { padding: 60px 40px; }
+        
+        /* Nút Đóng [X] */
+        .ht-close-mobile-menu {
+            position: absolute; top: 15px; right: 20px; font-size: 35px;
+            background: none; border: none; cursor: pointer; color: #aaa;
+            line-height: 1; padding: 0;
+        }
+        .ht-close-mobile-menu:hover { color: #333; }
+
+        /* Nút Mở (Hamburger) */
+        .ht-open-mobile-menu { background: none; border: none; font-size: 24px; cursor: pointer; color: #333; }
+
+        /* Các style cho nội dung bên trong menu */
+        .ht-mobile-menu-item { margin-bottom: 15px; }
+        .ht-mobile-menu-item .ht-search-component input {
+            width: 100%; height: 48px; background-color: #f5f5f5;
+            border: 1px solid #e0e0e0; border-radius: 24px;
+            padding-left: 20px; padding-right: 45px;
+        }
+        .ht-mobile-menu-item .ht-search-component form { position: relative; }
+        .ht-mobile-menu-item .ht-search-component button {
+            position: absolute; right: 5px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; font-size: 16px; color: #555;
+            width: 40px; height: 40px;
+        }
+        .ht-mobile-main-menu { list-style: none; padding: 0; margin: 15px 0 0 0; }
+        .ht-mobile-main-menu a {
+            display: flex; align-items: center; padding: 14px 10px;
+            text-decoration: none; color: #212529; font-weight: 500;
+            font-size: 16px; border-radius: 8px;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .ht-mobile-main-menu a:hover { background-color: #f0f0f0; }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const openBtn  = document.getElementById('ht-open-mobile-menu');
+            const closeBtn = document.getElementById('ht-close-mobile-menu');
+            const overlay  = document.getElementById('ht-mobile-overlay');
+            const body = document.body; // Lấy thẻ body
+
+            if (!overlay) return;
+
+            /* --- NEW: đảm bảo overlay là con trực tiếp của <body> để không bị sticky/transform ảnh hưởng --- */
+            if (overlay.parentElement !== document.body) {
+                document.body.appendChild(overlay);
+            }
+
+            /* --- NEW: tính offset theo trạng thái THỰC TẾ của admin bar (có trong viewport hay không) --- */
+            const adminBar = document.getElementById('wpadminbar');
+
+            function adminBarOffset() {
+                if (!adminBar) return 0;
+                const cs = getComputedStyle(adminBar);
+                if (cs.display === 'none' || cs.visibility === 'hidden' || adminBar.offsetHeight === 0) return 0;
+                const rect = adminBar.getBoundingClientRect();
+                if (cs.position === 'fixed') {
+                    if (rect.bottom > 0 && rect.top <= 0) {
+                        return adminBar.offsetHeight;
+                    }
+                    return 0;
+                }
+                if (rect.top <= 0 && rect.bottom > 0) {
+                    return adminBar.offsetHeight;
+                }
+                return 0;
+            }
+
+            function applyOverlayTop() {
+                overlay.style.top = adminBarOffset() + 'px';
+            }
+
+            // Gọi khi load, khi resize/orientation, và khi SCROLL
+            applyOverlayTop();
+            window.addEventListener('resize', applyOverlayTop);
+            window.addEventListener('orientationchange', applyOverlayTop);
+
+            let ticking = false;
+            window.addEventListener('scroll', function() {
+                if (!ticking) {
+                    window.requestAnimationFrame(function() {
+                        applyOverlayTop();
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }, {passive:true});
+
+            if (openBtn && closeBtn) {
+                
+                // --- BẮT ĐẦU PHẦN THÊM MỚI ---
+
+                // Hàm xử lý khi người dùng cố gắng cuộn trang (sự kiện 'wheel')
+                const handleScrollAttempt = (e) => {
+                    // Nếu menu đang mở, đóng nó lại
+                    if (overlay.classList.contains('is-open')) {
+                        closeMenu();
+                    }
+                };
+                
+                // --- KẾT THÚC PHẦN THÊM MỚI ---
+
+                const handleClickOutside = (e) => {
+                    if (!overlay.contains(e.target) && e.target !== openBtn && !openBtn.contains(e.target)) {
+                        closeMenu();
+                    }
+                };
+
+                const openMenu = () => {
+                    applyOverlayTop();
+                    overlay.classList.add('is-open');
+                    body.classList.add('ht-mobile-menu-open'); // Khóa cuộn
+                    document.addEventListener('click', handleClickOutside);
+                    // Thêm lắng nghe sự kiện cuộn khi menu mở
+                    window.addEventListener('wheel', handleScrollAttempt, { passive: true });
+                };
+
+                const closeMenu = () => {
+                    overlay.classList.remove('is-open');
+                    body.classList.remove('ht-mobile-menu-open'); // Mở khóa cuộn
+                    document.removeEventListener('click', handleClickOutside);
+                    // Gỡ bỏ lắng nghe sự kiện cuộn khi menu đóng
+                    window.removeEventListener('wheel', handleScrollAttempt);
+                };
+
+                openBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (overlay.classList.contains('is-open')) closeMenu(); else openMenu();
+                });
+
+                closeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    closeMenu();
+                });
+
+                overlay.addEventListener('click', (e) => { e.stopPropagation(); }, {passive:true});
+            }
+        });
+    </script>
+    <?php
+}
+add_action('wp_footer', 'ht_mobile_menu_scripts');
+
+
+function my_theme_enqueue_styles() {
+
+    // 1. Tải file style.css chính (luôn được tải trên mọi trang)
+    wp_enqueue_style(
+        'my-theme-main-style',
+        get_stylesheet_uri()
+    );
+
+    // 2. CHỈ tải file content.css KHI ở trang blog, trang lưu trữ (archive), hoặc trang tìm kiếm
+    if (is_home() || is_archive() || is_search()) {
+        wp_enqueue_style(
+            'my-theme-archive-styles', // Tên định danh cho CSS của trang danh sách
+            get_template_directory_uri() . '/template-parts/content.css', // Đường dẫn file
+            ['my-theme-main-style'] // Phụ thuộc vào file style chính
+        );
+    }
+
+    // 3. CHỈ tải file content-single.css KHI xem một bài viết chi tiết
+    if (is_singular('post')) {
+        wp_enqueue_style(
+            'my-theme-single-post-style', // Tên định danh cho CSS của trang chi tiết
+            get_template_directory_uri() . '/template-parts/content-single.css', // Đường dẫn file
+            ['my-theme-main-style'] // Phụ thuộc vào file style chính
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'my_theme_enqueue_styles');
+
+/**
+ * CẬP NHẬT: Lấy và trả về HTML cho các slide bài viết liên quan.
+ */
+function get_related_posts_slides($post_id) {
+    $categories = get_the_category($post_id);
+    if (empty($categories)) return '';
+
+    $category_ids = wp_list_pluck($categories, 'term_id');
+
+    $args = array(
+        'category__in'        => $category_ids,
+        'post__not_in'        => array($post_id),
+        'posts_per_page'      => 5, // Lấy 5 bài
+        'ignore_sticky_posts' => 1,
+    );
+
+    $related_posts = new WP_Query($args);
+    $output = '';
+
+    if ($related_posts->have_posts()) {
+        while ($related_posts->have_posts()) {
+            $related_posts->the_post();
+            $output .= '<div class="swiper-slide">'; // Mỗi bài là một slide
+            $output .= '<div class="related-post-item">';
+            $output .= '<a href="' . get_the_permalink() . '">';
+            if (has_post_thumbnail()) {
+                $output .= '<div class="related-post-thumbnail">' . get_the_post_thumbnail(get_the_ID(), 'medium') . '</div>';
+            } else {
+                $output .= '<div class="related-post-thumbnail"><img src="' . get_template_directory_uri() . '/assets/images/default-image.svg" alt="Blog"></div>';
+            }
+            $output .= '<h4 class="related-post-title">' . get_the_title() . '</h4>';
+            $output .= '</a>';
+            $output .= '</div>';
+            $output .= '</div>';
+        }
+    }
+    wp_reset_postdata();
+    return $output;
+}
+
+
+/**
+ * CẬP NHẬT: Thêm thư viện Swiper.js và file script tùy chỉnh.
+ */
+function my_theme_enqueue_assets() {
+    // Luôn tải file style chính
+    wp_enqueue_style('mytheme-main-style', get_stylesheet_uri());
+
+    // Chỉ tải các tài nguyên cho slider KHI xem bài viết chi tiết
+    if (is_singular('post')) {
+        // Tải CSS của SwiperJS từ CDN
+        wp_enqueue_style('swiper-css', 'https://unpkg.com/swiper/swiper-bundle.min.css');
+        
+        // Tải JS của SwiperJS từ CDN
+        wp_enqueue_script('swiper-js', 'https://unpkg.com/swiper/swiper-bundle.min.js', array(), null, true);
+
+        // Tải file JS tùy chỉnh của bạn để khởi tạo slider
+        wp_enqueue_script('mytheme-custom-script', get_template_directory_uri() . '/assets/js/main.js', array('swiper-js'), null, true);
+    }
+}
+add_action('wp_enqueue_scripts', 'my_theme_enqueue_assets');
+
+
+// Hàm tính thời gian đọc (giữ nguyên)
+function get_post_reading_time() {
+    $content = get_post_field('post_content', get_the_ID());
+    $word_count = str_word_count(strip_tags($content));
+    $reading_time = ceil($word_count / 200);
+    return $reading_time . ' phút đọc';
+}

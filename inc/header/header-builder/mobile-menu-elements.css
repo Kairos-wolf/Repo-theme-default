@@ -1,0 +1,36 @@
+.ht-mobile-elements-list {
+    border: 1px solid #ddd;
+    background: #fff;
+    padding: 5px;
+    border-radius: 3px;
+    margin-top: 10px;
+}
+.ht-mobile-element-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    background: #0073aa; /* Màu xanh dương giống ảnh */
+    color: white;
+    border-radius: 3px;
+    margin-bottom: 5px;
+}
+.ht-mobile-element-item:last-child {
+    margin-bottom: 0;
+}
+.ht-mobile-element-item .drag-handle {
+    cursor: move;
+    margin-right: 10px;
+}
+.ht-mobile-element-item .element-label {
+    flex-grow: 1;
+}
+.ht-mobile-element-item .toggle-visibility {
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: white;
+    padding: 0 5px;
+}
+.ht-mobile-element-item .toggle-visibility .dashicons-hidden {
+    opacity: 0.5;
+}

@@ -14,6 +14,135 @@ function mytheme_customize_register($wp_customize)
         $site_identity_section->title = __( 'Logo & Site Identity', 'mytheme' );
         $site_identity_section->priority = 1;
     }
+
+    // Section: Top Bar
+    $wp_customize->add_section('ht_topbar_section', array(
+        'title'       => __('Top Bar', 'mytheme'),
+        'panel'       => 'header_main_panel', 
+        'description' => __('Đây là mục chỉnh sửa các thành phần của Top Bar.', 'mytheme'),
+        'priority'    => 2,
+    ));
+
+    // Bật/Tắt Topbar trên Desktop
+    $wp_customize->add_setting('ht_topbar_show_desktop', [
+        'default'           => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ]);
+    $wp_customize->add_control('ht_topbar_show_desktop_control', [
+        'label'    => __('Hiển thị Topbar trên Desktop', 'ht'),
+        'section'  => 'ht_topbar_section', // Đảm bảo đúng tên section
+        'settings' => 'ht_topbar_show_desktop',
+        'type'     => 'checkbox',
+    ]);
+
+    // Bật/Tắt Topbar trên Mobile/Tablet
+    $wp_customize->add_setting('ht_topbar_show_mobile', [
+        'default'           => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ]);
+    $wp_customize->add_control('ht_topbar_show_mobile_control', [
+        'label'    => __('Hiển thị Topbar trên Mobile/Tablet', 'ht'),
+        'section'  => 'ht_topbar_section',
+        'settings' => 'ht_topbar_show_mobile',
+        'type'     => 'checkbox',
+    ]);
+
+    // Background color Top Bar
+    $wp_customize->add_setting('topbar_background_color', array(
+        'default'           => '#f8f9fa', 
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Color_Control(
+        $wp_customize,
+        'topbar_background_color_control',
+        array(
+            'label'    => __('Màu nền Top Bar', 'mytheme'),
+            'section'  => 'ht_topbar_section',
+            'settings' => 'topbar_background_color',
+        )
+    ));
+
+    // Background image Top Bar
+    $wp_customize->add_setting('topbar_bg_image', array(
+        'default'           => '', 
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Image_Control(
+        $wp_customize,
+        'topbar_bg_image_control',
+        array(
+            'label'       => __('Ảnh nền Top Bar', 'mytheme'),
+            'description' => __('Tải lên một ảnh để làm nền cho Top Bar.', 'mytheme'),
+            'section'     => 'ht_topbar_section',
+            'settings'    => 'topbar_bg_image',
+        )
+    ));
+
+    // Color Top Bar
+    $wp_customize->add_setting('topbar_color', array(
+        'default'           => '#333333', // Thay đổi màu mặc định nếu muốn
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Color_Control(
+        $wp_customize,
+        'topbar_color_control',
+        array(
+            'label'    => __('Màu chữ Top Bar', 'mytheme'),
+            'section'  => 'ht_topbar_section',
+            'settings' => 'topbar_color',
+        )
+    ));
+
+    // Margin Top Bar
+    $wp_customize->add_setting('topbar_margin', array(
+        'default'           => '0',
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('topbar_margin_control', array(
+        'label'       => __('Margin Top Bar', 'mytheme'),
+        'section'     => 'ht_topbar_section',
+        'settings'    => 'topbar_margin',
+        'type'        => 'text',
+        'description' => __('Nhập theo cú pháp CSS, ví dụ: 0 0 10px 0', 'mytheme'),
+    ));
+
+    // Padding Top Bar
+    $wp_customize->add_setting('topbar_padding', array(
+        'default'           => '10px 0', // Thay đổi padding mặc định nếu muốn
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('topbar_padding_control', array(
+        'label'       => __('Padding nội dung Top Bar', 'mytheme'),
+        'section'     => 'ht_topbar_section',
+        'settings'    => 'topbar_padding',
+        'type'        => 'text',
+        'description' => __('Nhập theo cú pháp CSS, ví dụ: 10px 0', 'mytheme'),
+    ));
+
+    // Border radius Top Bar
+    $wp_customize->add_setting('topbar_border_radius', array(
+        'default'           => '0',
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('topbar_border_radius_control', array(
+        'label'       => __('Bo tròn Top Bar', 'mytheme'),
+        'section'     => 'ht_topbar_section',
+        'settings'    => 'topbar_border_radius',
+        'type'        => 'text',
+        'description' => __('Nhập theo cú pháp CSS, ví dụ: 0 0 10px 10px)', 'mytheme'),
+    ));
     
     // Section: Header Main
     $wp_customize->add_section('hm_header_main', array(
@@ -118,6 +247,117 @@ function mytheme_customize_register($wp_customize)
         'settings' => 'header_main_border_radius',
         'type'     => 'text',
         'description' => __('Nhập theo cú pháp CSS, ví dụ: 10px)', 'mytheme'),
+    ));
+
+    // Section: Header Bottom
+    $wp_customize->add_section('ht_header_bottom_section', array(
+        'title'       => __('Header Bottom', 'mytheme'),
+        'panel'       => 'header_main_panel',
+        'description' => __('Đây là mục chỉnh sửa các thành phần của Header Bottom.', 'mytheme'),
+        'priority'    => 5, // Đặt priority để nó hiện sau Header Main
+    ));
+
+    // Bật/Tắt Header Bottom trên Desktop
+    $wp_customize->add_setting('ht_header_bottom_show_desktop', [
+        'default'           => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ]);
+    $wp_customize->add_control('ht_header_bottom_show_desktop_control', [
+        'label'    => __('Hiển thị Header Bottom trên Desktop', 'ht'),
+        'section'  => 'ht_header_bottom_section', // Đảm bảo đúng tên section
+        'settings' => 'ht_header_bottom_show_desktop',
+        'type'     => 'checkbox',
+    ]);
+
+    // Bật/Tắt Header Bottom trên Mobile/Tablet
+    $wp_customize->add_setting('ht_header_bottom_show_mobile', [
+        'default'           => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ]);
+    $wp_customize->add_control('ht_header_bottom_show_mobile_control', [
+        'label'    => __('Hiển thị Header Bottom trên Mobile/Tablet', 'ht'),
+        'section'  => 'ht_header_bottom_section',
+        'settings' => 'ht_header_bottom_show_mobile',
+        'type'     => 'checkbox',
+    ]);
+
+    // Background color Header Bottom
+    $wp_customize->add_setting('header_bottom_background_color', array(
+        'default'           => '#ffffff',
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'header_bottom_background_color_control', array(
+        'label'    => __('Màu nền Header Bottom', 'mytheme'),
+        'section'  => 'ht_header_bottom_section',
+        'settings' => 'header_bottom_background_color',
+    )));
+
+    // Background image Header Bottom
+    $wp_customize->add_setting('header_bottom_bg_image', array(
+        'default'           => '', 
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'header_bottom_bg_image_control', array(
+        'label'       => __('Ảnh nền Header Bottom', 'mytheme'),
+        'description' => __('Tải lên một ảnh để làm nền cho Header Bottom.', 'mytheme'),
+        'section'     => 'ht_header_bottom_section',
+        'settings'    => 'header_bottom_bg_image',
+    )));
+
+    // Color Header Bottom
+    $wp_customize->add_setting('header_bottom_color', array(
+        'default'           => '#333333',
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'header_bottom_color_control', array(
+        'label'    => __('Màu chữ Header Bottom', 'mytheme'),
+        'section'  => 'ht_header_bottom_section',
+        'settings' => 'header_bottom_color',
+    )));
+
+    // Margin Header Bottom
+    $wp_customize->add_setting('header_bottom_margin', array(
+        'default'           => '0',
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('header_bottom_margin_control', array(
+        'label'       => __('Margin Header Bottom', 'mytheme'),
+        'section'     => 'ht_header_bottom_section',
+        'settings'    => 'header_bottom_margin',
+        'type'        => 'text',
+        'description' => __('Nhập theo cú pháp CSS, ví dụ: 0 0 10px 0', 'mytheme'),
+    ));
+
+    // Padding Header Bottom
+    $wp_customize->add_setting('header_bottom_padding', array(
+        'default'           => '10px 0',
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('header_bottom_padding_control', array(
+        'label'       => __('Padding nội dung Header Bottom', 'mytheme'),
+        'section'     => 'ht_header_bottom_section',
+        'settings'    => 'header_bottom_padding',
+        'type'        => 'text',
+        'description' => __('Nhập theo cú pháp CSS, ví dụ: 10px 0', 'mytheme'),
+    ));
+
+    // Border radius Header Bottom
+    $wp_customize->add_setting('header_bottom_border_radius', array(
+        'default'           => '0',
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('header_bottom_border_radius_control', array(
+        'label'       => __('Bo tròn Header Bottom', 'mytheme'),
+        'section'     => 'ht_header_bottom_section',
+        'settings'    => 'header_bottom_border_radius',
+        'type'        => 'text',
+        'description' => __('Nhập theo cú pháp CSS, ví dụ: 0 0 10px 10px)', 'mytheme'),
     ));
 
     // Section: Logo settings
@@ -468,8 +708,9 @@ function mytheme_customize_register($wp_customize)
     $wp_customize->add_control('search_button_html', array(
         'label'    => __('Nội dung nút tìm kiếm', 'mytheme'),
         'section'  => 'hm_search_settings',
+        'default' => '<i class="fa-solid fa-magnifying-glass"></i>',
         'type'     => 'textarea',
-        'description' => __('Bạn có thể sử dụng text hoặc html trong nội dung nút tìm kiếm, ví dụ: "Tìm <i class="fa-solid fa-magnifying-glass"></i>"', 'mytheme'),
+        'description' => __('Bạn có thể sử dụng text hoặc html trong nội dung nút tìm kiếm. Có thể sử dụng font awesome', 'mytheme'),
     ));
 
     // Màu chữ nút tìm kiếm
@@ -518,7 +759,7 @@ function mytheme_customize_register($wp_customize)
 
     // Margin nút tìm kiếm (4 hướng)
     $wp_customize->add_setting('search_button_margin', array(
-        'default' => '0',
+        'default' => '-5px',
         'transport' => 'refresh',
         'sanitize_callback' => 'sanitize_text_field',
     ));
@@ -532,7 +773,7 @@ function mytheme_customize_register($wp_customize)
 
     // Padding nội dung bên trong nút tìm kiếm
     $wp_customize->add_setting('search_button_padding', array(
-        'default' => '',
+        'default' => '10px',
         'transport' => 'refresh',
         'sanitize_callback' => 'sanitize_text_field',
     ));
@@ -546,7 +787,7 @@ function mytheme_customize_register($wp_customize)
 
     // Border radius nút tìm kiếm
     $wp_customize->add_setting('search_button_border_radius', array(
-        'default' => '',
+        'default' => '0px 5px 5px 0px',
         'transport' => 'refresh',
         'sanitize_callback' => 'sanitize_text_field',
     ));
@@ -855,5 +1096,108 @@ function mytheme_customize_register($wp_customize)
         'settings' => 'ht_sticky_header_bottom_enabled',
         'type'     => 'checkbox',
     ]);
+
+
+    // Thêm Section mới vào Panel "Header"
+    $wp_customize->add_section('ht_mobile_menu_section', [
+        'title'    => __('Header Mobile Menu / Overlay', 'ht'),
+        'priority' => 6,
+        'panel'    => 'header_main_panel', // Đảm bảo bạn có panel này
+    ]);
+
+    // Vị trí
+    $wp_customize->add_setting('ht_mobile_overlay_position', [
+        'default'           => 'right', // Giữ nguyên mặc định là 'right'
+        'sanitize_callback' => 'ht_sanitize_radio_choices', 
+    ]);
+    $wp_customize->add_control('ht_mobile_overlay_position_control', [
+        'label'   => __('Vị trí Menu Overlay', 'ht'),
+        'section' => 'ht_mobile_menu_section',
+        'settings' => 'ht_mobile_overlay_position',
+        'type'    => 'radio',
+        'choices' => [
+            'left'  => __('Bên trái', 'ht'),
+            'right' => __('Bên phải', 'ht'),
+        ],
+    ]);
+
+    // Màu nền
+    $wp_customize->add_setting('ht_mobile_bg_color', [
+        'default'           => '#ffffff',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ]);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ht_mobile_bg_color_control', [
+        'label'    => __('Màu nền Menu Overlay', 'ht'),
+        'section'  => 'ht_mobile_menu_section',
+        'settings' => 'ht_mobile_bg_color',
+    ]));
+
+    // Hành vi Click
+    $wp_customize->add_setting('ht_mobile_submenu_click_behavior', [
+        'default'           => 'toggle_submenu', // Giữ nguyên mặc định là 'toggle_submenu'
+        'sanitize_callback' => 'ht_sanitize_radio_choices',
+    ]);
+    $wp_customize->add_control('ht_mobile_submenu_click_behavior_control', [
+        'label'       => __('Hành vi khi click vào mục cha', 'ht'),
+        'description' => __('Hành vi của mục menu có menu con.', 'ht'),
+        'section'     => 'ht_mobile_menu_section',
+        'settings'    => 'ht_mobile_submenu_click_behavior',
+        'type'        => 'radio',
+        'choices'     => [
+            'open_link'      => __('Mở liên kết', 'ht'),
+            'toggle_submenu' => __('Mở menu con', 'ht'),
+        ],
+    ]);
+
+    // Hiệu ứng Submenu
+    $wp_customize->add_setting('ht_mobile_submenu_effect', [
+        'default'           => 'slide', // THAY ĐỔI: Mặc định là 'slide'
+        'sanitize_callback' => 'ht_sanitize_radio_choices',
+    ]);
+    $wp_customize->add_control('ht_mobile_submenu_effect_control', [
+        'label'   => __('Hiệu ứng Menu con', 'ht'),
+        'section' => 'ht_mobile_menu_section',
+        'settings' => 'ht_mobile_submenu_effect',
+        'type'    => 'radio',
+        'choices' => [
+            'accordion' => __('Accordion (Sổ xuống)', 'ht'),
+            'slide'     => __('Slide (Trượt ngang)', 'ht'),
+        ],
+    ]);
+
+    // Danh sách các thành phần
+    $wp_customize->add_setting('ht_mobile_menu_elements', [
+        'default'   => json_encode([
+            ['id' => 'search', 'visible' => true],
+            ['id' => 'menu', 'visible' => true],
+            ['id' => 'login', 'visible' => true],
+            ['id' => 'social', 'visible' => false],
+        ]),
+        'transport' => 'refresh',
+        'sanitize_callback' => 'wp_kses_post',
+    ]);
+
+    // Tải và sử dụng Custom Control
+    require_once(get_template_directory() . '/inc/header/header-builder/class-mobile-menu-elements-control.php');
+    $wp_customize->add_control(new HT_Mobile_Menu_Elements_Control($wp_customize, 'ht_mobile_menu_elements_control', [
+        'label'    => __('Thành phần Menu Mobile', 'ht'),
+        'section'  => 'ht_mobile_menu_section',
+        'settings' => 'ht_mobile_menu_elements',
+    ]));
+
+    if (!function_exists('ht_sanitize_radio_choices')) {
+        function ht_sanitize_radio_choices($input, $setting) {
+            $choices = $setting->manager->get_control($setting->id)->choices;
+            if (array_key_exists($input, $choices)) {
+                return $input;
+            }
+            return $setting->default;
+        }
+    }
+
+    if (function_exists('ht_blog_customizer_register')) {
+        ht_blog_customizer_register($wp_customize);
+    }
 }
 add_action('customize_register', 'mytheme_customize_register');
+

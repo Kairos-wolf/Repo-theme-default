@@ -215,62 +215,110 @@
         <header class="sticky top-0">
             <?php get_template_part('topbar'); ?>
             <?php
-                // Kiểm tra xem sticky có được bật cho header main không
-                $is_sticky = get_theme_mod('ht_sticky_header_main_enabled', false);
-                $sticky_class = $is_sticky ? ' ht-sticky-item' : '';
+            // =========================================================================
+            // BẮT ĐẦU PHẦN CẬP NHẬT LOGIC HEADER MAIN
+            // =========================================================================
+            
+            // Kiểm tra xem sticky có được bật cho header main không
+            $is_sticky = get_theme_mod('ht_sticky_header_main_enabled', false);
+            $sticky_class = $is_sticky ? ' ht-sticky-item' : '';
+
+            // Lấy cấu trúc layout mới cho cả desktop và mobile
+            $default_layout = json_encode([
+                'desktop' => ['left' => ['logo'], 'right' => ['menu', 'search']],
+                'mobile'  => ['left' => ['logo'], 'center' => [], 'right' => []]
+            ]);
+            $layout_json = get_theme_mod('ht_header_layout', $default_layout);
+            $layout = json_decode($layout_json, true);
+
+            // Gán layout cho từng giao diện, đảm bảo có giá trị dự phòng
+            $desktop_layout = $layout['desktop'] ?? ['left' => ['logo'], 'right' => []];
+            $mobile_layout  = $layout['mobile'] ?? ['left' => ['logo'], 'center' => [], 'right' => []];
             ?>
             <nav class="navbar navbar-expand-lg header-main<?php echo esc_attr($sticky_class); ?>">
                 <div class="container-fluid">
-                    <?php
-                    // Lấy layout từ Customizer với cấu trúc mới
-                    $default_layout = json_encode(['left' => ['logo'], 'right' => ['menu']]);
-                    $layout_json = get_theme_mod('ht_header_layout', $default_layout);
-                    $layout = json_decode($layout_json, true);
 
-                    // Đảm bảo $layout luôn là một mảng hợp lệ
-                    if (!is_array($layout) || !isset($layout['left']) || !isset($layout['right'])) {
-                        $layout = json_decode($default_layout, true);
-                    }
-                    ?>
-                    <div class="navbar-brand d-flex align-items-center gap-3">
-                        <?php
-                        if (!empty($layout['left'])) {
-                            foreach ($layout['left'] as $item) {
-                                // Logic đặc biệt cho logo để giữ lại class custom-logo
-                                if ($item === 'logo') {
-                                    echo '<div class="header-item logo custom-logo">';
-                                    if (has_custom_logo()) {
-                                        the_custom_logo();
-                                    } else {
-                                        bloginfo('name');
-                                    }
-                                    echo '</div>';
-                                } else {
-                                    echo render_header_item($item);
-                                }
-                            }
-                        }
-                        ?>
-                    </div>
-
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav ms-auto d-flex align-items-lg-center gap-3">
+                    <div class="header-desktop-wrapper d-none d-lg-flex w-100 align-items-center">
+                        <div class="navbar-brand d-flex align-items-center gap-3">
                             <?php
-                            if (!empty($layout['right'])) {
-                                foreach ($layout['right'] as $item) {
-                                    echo '<li class="nav-item">';
-                                    echo render_header_item($item);
-                                    echo '</li>';
+                            if (!empty($desktop_layout['left'])) {
+                                foreach ($desktop_layout['left'] as $item) {
+                                    // Logic đặc biệt cho logo để giữ lại class custom-logo
+                                    if ($item === 'logo') {
+                                        echo '<div class="header-item logo custom-logo">';
+                                        if (has_custom_logo()) {
+                                            the_custom_logo();
+                                        } else {
+                                            bloginfo('name');
+                                        }
+                                        echo '</div>';
+                                    } else {
+                                        echo render_header_item($item);
+                                    }
                                 }
                             }
                             ?>
-                        </ul>
+                        </div>
+                        
+                        <div class="collapse navbar-collapse show" id="navbarSupportedContent">
+                            <ul class="navbar-nav ms-auto d-flex align-items-lg-center gap-3">
+                                <?php
+                                if (!empty($desktop_layout['right'])) {
+                                    foreach ($desktop_layout['right'] as $item) {
+                                        echo '<li class="nav-item">' . render_header_item($item) . '</li>';
+                                    }
+                                }
+                                ?>
+                            </ul>
+                        </div>
                     </div>
+
+                    <div class="header-mobile-wrapper d-lg-none w-100 d-flex align-items-center">
+                        <div class="header-mobile-left col d-flex justify-content-start align-items-center gap-2">
+                             <?php
+                             if (!empty($mobile_layout['left'])) {
+                                foreach ($mobile_layout['left'] as $item) { echo render_header_item($item); }
+                             }
+                             ?>
+                        </div>
+                        <div class="header-mobile-center col d-flex justify-content-center align-items-center gap-2">
+                            <?php
+                            if (!empty($mobile_layout['center'])) {
+                                foreach ($mobile_layout['center'] as $item) { echo render_header_item($item); }
+                            }
+                            ?>
+                        </div>
+                        <div class="header-mobile-right col d-flex justify-content-end align-items-center gap-2">
+                            <?php
+                            if (!empty($mobile_layout['right'])) {
+                                foreach ($mobile_layout['right'] as $item) { echo render_header_item($item); }
+                            }
+                            ?>
+                            <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button> -->
+                            <button id="ht-open-mobile-menu" class="ht-open-mobile-menu d-lg-none">
+                                <i class="fas fa-bars"></i>
+                            </button>
+                            <?php get_template_part('mobile-menu'); ?>
+
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                <ul class="navbar-nav ms-auto d-flex align-items-lg-center gap-3">
+                                    <?php
+                                    if (!empty($layout['right'])) {
+                                        foreach ($layout['right'] as $item) {
+                                            echo '<li class="nav-item">';
+                                            echo render_header_item($item);
+                                            echo '</li>';
+                                        }
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </nav>
 

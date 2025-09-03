@@ -85,8 +85,6 @@ function ht_customize_register($wp_customize)
         ]);
     }
 
-    
-
 
     // Section Header Bottom
     $wp_customize->add_section('ht_headerbottom_builder', [
